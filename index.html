@@ -7,11 +7,11 @@
      EDIT THIS: page title shown in the browser tab / search results
      ============================================================ -->
 <title>Bake It Till You Make It: Ultrafast Spatial Texture-Surfel Splatting</title>
-<meta name="description" content="Ultrafast novel view synthesis by baking a view-independent texture into a compact atlas that surfels probe, rendering with pure hardware texture lookups.">
+<meta name="description" content="Ultrafast novel view synthesis by baking a view-independent texture residual, rendering with pure hardware texture lookups.">
 
 <!-- Open Graph / social preview. EDIT the og:image URL and og:url. -->
 <meta property="og:title" content="Bake It Till You Make It">
-<meta property="og:description" content="Ultrafast texture-surfel splatting: 1500+ FPS, ~64 MB textures, real-time on a phone.">
+<meta property="og:description" content="Ultrafast texture-surfel splatting: 1500+ FPS, real-time on a phone.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nilkel.github.io/bitymi/">
 <meta property="og:image" content="https://nilkel.github.io/bitymi/static/images/teaser.png">
@@ -63,6 +63,7 @@
 
   /* ---------- Figures ---------- */
   figure{margin:1.4rem 0}
+  figure img[src$=".svg"]{border:0; background:transparent}
   figure img,video{width:100%; height:auto; border-radius:10px; border:1px solid var(--line); display:block}
   figcaption{color:var(--muted); font-size:.95rem; margin-top:.6rem; text-align:center}
   .placeholder{display:flex; align-items:center; justify-content:center; text-align:center;
@@ -70,11 +71,11 @@
     min-height:280px; color:var(--muted); font-size:.95rem; padding:1.4rem}
 
   /* ---------- Stat row ---------- */
-  .stats{display:grid; grid-template-columns:repeat(4,1fr); gap:.8rem; margin:1.8rem 0}
+  .stats{display:grid; grid-template-columns:repeat(3,1fr); gap:.8rem; margin:1.8rem 0}
   .stat{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:1rem .6rem; text-align:center}
   .stat .num{font-size:1.7rem; font-weight:800; color:var(--accent); line-height:1.1}
   .stat .lbl{font-size:.85rem; color:var(--muted); margin-top:.25rem}
-  @media (max-width:640px){ .stats{grid-template-columns:repeat(2,1fr)} .title{font-size:2rem} }
+  @media (max-width:640px){ .stats{grid-template-columns:1fr} .title{font-size:2rem} }
 
   /* ---------- Abstract & body ---------- */
   .abstract{font-size:1.05rem}
@@ -166,7 +167,6 @@
   <!-- =================== STATS =================== EDIT numbers -->
   <div class="stats">
     <div class="stat"><div class="num">1500+</div><div class="lbl">FPS on RTX 5090<br>(Mip-NeRF 360)</div></div>
-    <div class="stat"><div class="num">~64 MB</div><div class="lbl">BC7 texture<br>(8K, shared)</div></div>
     <div class="stat"><div class="num">Real-time</div><div class="lbl">on M3 MacBook<br>&amp; Galaxy S24</div></div>
     <div class="stat"><div class="num">No MLP</div><div class="lbl">pure texture<br>lookups at inference</div></div>
   </div>
@@ -179,9 +179,8 @@
     appearance parameterization, but pay a high per-fragment cost from neural field queries during
     rendering. We introduce a decoupled radiance representation that models low-frequency geometry
     and view-dependent appearance with 2D surfels, while representing high-frequency texture as a
-    view-independent residual. Because the residual is view independent, we bake it into a compact,
-    fixed-size texture that each surfel probes, so inference reduces to pure hardware texture
-    sampling with no neural queries. Combined with sparsity-enhancing optimization, our method
+    view-independent residual. Because the residual is view independent, we bake it into a compact
+    texture, so inference reduces to pure hardware texture sampling with no neural queries. Combined with sparsity-enhancing optimization, our method
     renders significantly faster and sparser than prior work while preserving perceptual fidelity,
     reaching real-time 4K rates on consumer hardware and real-time rendering on mobile devices.
   </p>
@@ -191,9 +190,6 @@
   <ul class="highlights">
     <li><strong>View-independent texture residual.</strong> Restricting the residual to be view
       independent is what makes it bakeable, removing per-fragment neural queries at inference.</li>
-    <li><strong>Compact shared texture via surfel probing.</strong> Surfels learn probes into a
-      single fixed-size texture image, giving an order-of-magnitude smaller footprint than
-      per-surfel atlases at better perceptual quality.</li>
     <li><strong>Hardware-native rendering.</strong> Inference is nothing but GPU texture lookups,
       which run fast on the texture-sampling hardware every phone already has.</li>
     <li><strong>Sparse geometry.</strong> Decoupling appearance from geometry lets the surfels stay
@@ -203,12 +199,11 @@
   <!-- =================== METHOD =================== -->
   <h2>Method</h2>
   <figure>
-    <!-- REPLACE with: <img src="static/images/pipeline.png" alt="Pipeline"> -->
-    <div class="placeholder">Pipeline / method figure &rarr; <code>static/images/pipeline.png</code></div>
+    <img src="static/images/pipeline_full.svg" alt="Full pipeline: per-surfel view-dependent colour plus a view-independent texture residual, baked and compressed for inference">
     <figcaption>
-      During training, view-dependent color is modeled per surfel and the view-independent texture
-      residual is learned into a shared texture. For inference, the texture is baked and compressed,
-      and rendering uses only hardware texture sampling.
+      During training, view-dependent colour is modelled per surfel while the view-independent
+      texture residual is learned separately. For inference the residual is baked and compressed,
+      so rendering uses only hardware texture sampling &mdash; no neural queries per fragment.
     </figcaption>
   </figure>
 
