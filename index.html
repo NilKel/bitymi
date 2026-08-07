@@ -85,6 +85,14 @@
      for deliverables that are not published yet (live demos). */
   .btn.disabled{opacity:.5; cursor:not-allowed; pointer-events:none}
   .placeholder.tba{font-style:normal}
+  /* ---------- Demo links ---------- */
+  .demogrid{display:grid; grid-template-columns:repeat(2,1fr); gap:.8rem}
+  @media (max-width:640px){ .demogrid{grid-template-columns:1fr} }
+  .demolink{display:block; background:var(--card); border:1px solid var(--line); border-radius:12px;
+            padding:1.15rem 1.2rem; color:var(--fg); transition:border-color .12s ease, transform .12s ease}
+  .demolink:hover{border-color:var(--accent); transform:translateY(-1px); text-decoration:none}
+  .dl-title{font-weight:700; font-size:1.1rem}
+  .dl-meta{color:var(--muted); font-size:.86rem; margin-top:.2rem}
   /* ---------- Results table ---------- */
   .restable{width:100%; border-collapse:collapse; font-size:.87rem; margin:.6rem 0 .3rem}
   .restable th,.restable td{padding:.42em .5em; border-bottom:1px solid var(--line); text-align:left}
@@ -133,7 +141,7 @@
       <a class="btn" href="#"><span class="ico">&#128196;</span> Paper</a>
       <a class="btn ghost" href="#"><span class="ico">&#128462;</span> arXiv</a>
       <a class="btn ghost" href="#demo"><span class="ico">&#127909;</span> Video</a>
-      <span class="btn ghost disabled" aria-disabled="true" title="Live WebGPU demos are not linked yet"><span class="ico">&#127918;</span> Interactive Demo &mdash; coming soon</span>
+      <a class="btn ghost" href="#demo"><span class="ico">&#127918;</span> Interactive Demo</a>
     </div>
   </div>
 </header>
@@ -222,7 +230,16 @@
            <iframe style="position:absolute;inset:0;width:100%;height:100%;border:0"
              src="viewer/index.html" title="Interactive viewer" allow="fullscreen"></iframe>
          </div> -->
-    <div class="placeholder tba">Interactive WebGPU demos &mdash; <strong>to be added</strong></div>
+    <div class="demogrid">
+      <a class="demolink" href="https://nilkel.github.io/bitymi-demos/viewer-v2/index.html?bundle=https://huggingface.co/datasets/Nilkel/bitymi-demos/resolve/main/mip_360/garden_sh_res.bitymi" target="_blank" rel="noopener">
+        <div class="dl-title">Garden</div>
+        <div class="dl-meta">79&nbsp;MB &middot; Mip-NeRF&nbsp;360 &middot; baked texture atlas</div>
+      </a>
+      <a class="demolink" href="https://nilkel.github.io/bitymi-demos/viewer-ws/index.html?bundle=https://huggingface.co/datasets/Nilkel/bitymi-demos/resolve/main/himalaya_brain/brain_brutebf_r2_bfc_meshcull.bitymi&amp;mesh_url=https://nilkel.github.io/bitymi-demos/test-data/brain_mesh_bfc_r2.ply&amp;mesh_cull=1&amp;mesh_normal_margin=-0.012&amp;bfc=1&amp;bfc_cos=0.2" target="_blank" rel="noopener">
+        <div class="dl-title">Brain</div>
+        <div class="dl-meta">123&nbsp;MB &middot; micro-CT &middot; proxy-mesh occlusion culling</div>
+      </a>
+    </div>
     <figcaption>Explore a baked scene in your browser. Runs on WebGPU with the same texture-only renderer.</figcaption>
   </figure>
 
