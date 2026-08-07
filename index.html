@@ -85,6 +85,17 @@
      for deliverables that are not published yet (live demos). */
   .btn.disabled{opacity:.5; cursor:not-allowed; pointer-events:none}
   .placeholder.tba{font-style:normal}
+  /* ---------- Results table ---------- */
+  .restable{width:100%; border-collapse:collapse; font-size:.87rem; margin:.6rem 0 .3rem}
+  .restable th,.restable td{padding:.42em .5em; border-bottom:1px solid var(--line); text-align:left}
+  .restable th{font-weight:600; font-size:.78rem; letter-spacing:.02em; text-transform:uppercase; color:var(--muted)}
+  .restable td.n{text-align:right; font-variant-numeric:tabular-nums}
+  .restable tr.mean td{border-top:2px solid var(--line); border-bottom:none}
+  .restable td.win{color:#1a7f37; font-weight:600}
+  .restable td.loss{color:#b35900; font-weight:600}
+  .tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  .tnote{font-size:.82rem; color:var(--muted); line-height:1.5; margin:.5rem 0 0}
+  @media (prefers-color-scheme:dark){ .restable td.win{color:#4ac26b} .restable td.loss{color:#e8a33d} }
   /* ---------- BibTeX ---------- */
   pre{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem;
       overflow-x:auto; font-size:.86rem; line-height:1.5}
@@ -237,6 +248,57 @@
   </figure>
 
   <!-- =================== BIBTEX =================== -->
+
+  <!-- =================== RESULTS =================== -->
+  <h2>Results</h2>
+  <p>Rendering throughput on the Mip-NeRF&nbsp;360 benchmark, measured on a single RTX&nbsp;5090.
+     All timings use per-frame <code>cuda.Event</code> pairs, 50 warm-up and 400 timed frames,
+     over each scene's held-out test cameras.</p>
+
+  <div class="tablewrap">
+  <table class="restable">
+    <thead>
+      <tr>
+        <th>Scene</th><th class="n">Resolution</th>
+        <th class="n">Prims (ours)</th><th class="n">Prims (FastGS)</th>
+        <th class="n">Neural FPS</th><th class="n">Ours FPS</th><th class="n">FastGS FPS</th><th class="n">Speed-up</th>
+        <th class="n">PSNR (ours)</th><th class="n">PSNR (FastGS)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>bicycle</td><td class="n">1237×822</td><td class="n">160,835</td><td class="n">539,624</td><td class="n">111</td><td class="n"><strong>1385</strong></td><td class="n">1204</td><td class="n" class="win">1.15×</td><td class="n">23.91</td><td class="n">24.62</td></tr>
+      <tr><td>bonsai</td><td class="n">1559×1039</td><td class="n">92,489</td><td class="n">275,719</td><td class="n">117</td><td class="n"><strong>1261</strong></td><td class="n">1241</td><td class="n" class="win">1.02×</td><td class="n">31.81</td><td class="n">32.12</td></tr>
+      <tr><td>counter</td><td class="n">1558×1038</td><td class="n">68,466</td><td class="n">208,171</td><td class="n">108</td><td class="n"><strong>1442</strong></td><td class="n">1207</td><td class="n" class="win">1.19×</td><td class="n">28.90</td><td class="n">29.08</td></tr>
+      <tr><td>flowers</td><td class="n">1256×828</td><td class="n">184,951</td><td class="n">489,951</td><td class="n">100</td><td class="n"><strong>1291</strong></td><td class="n">1173</td><td class="n" class="win">1.10×</td><td class="n">20.62</td><td class="n">21.31</td></tr>
+      <tr><td>garden</td><td class="n">1297×840</td><td class="n">148,803</td><td class="n">660,711</td><td class="n">117</td><td class="n"><strong>1943</strong></td><td class="n">1145</td><td class="n" class="win">1.70×</td><td class="n">26.71</td><td class="n">27.32</td></tr>
+      <tr><td>kitchen</td><td class="n">1558×1039</td><td class="n">119,525</td><td class="n">379,671</td><td class="n">93</td><td class="n"><strong>1495</strong></td><td class="n">1059</td><td class="n" class="win">1.41×</td><td class="n">30.65</td><td class="n">31.74</td></tr>
+      <tr><td>room</td><td class="n">1557×1038</td><td class="n">63,164</td><td class="n">207,167</td><td class="n">133</td><td class="n"><strong>1792</strong></td><td class="n">1343</td><td class="n" class="win">1.33×</td><td class="n">30.73</td><td class="n">31.74</td></tr>
+      <tr><td>stump</td><td class="n">1245×825</td><td class="n">96,471</td><td class="n">392,348</td><td class="n">132</td><td class="n"><strong>1394</strong></td><td class="n">1276</td><td class="n" class="win">1.09×</td><td class="n">25.54</td><td class="n">26.54</td></tr>
+      <tr><td>treehill</td><td class="n">1267×832</td><td class="n">175,459</td><td class="n">394,335</td><td class="n">98</td><td class="n"><strong>1105</strong></td><td class="n">1286</td><td class="n" class="loss">0.86×</td><td class="n">22.29</td><td class="n">22.85</td></tr>
+      <tr class="mean"><td><strong>mean</strong></td><td class="n">—</td><td class="n"><strong>123,351</strong></td><td class="n"><strong>394,188</strong></td><td class="n"><strong>112</strong></td><td class="n"><strong>1456</strong></td><td class="n"><strong>1215</strong></td><td class="n win"><strong>1.20×</strong></td><td class="n"><strong>26.80</strong></td><td class="n"><strong>27.48</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="tnote">
+    <strong>Neural FPS</strong> is our own pre-baking renderer, which evaluates the hash-grid and MLP
+    per fragment; baking replaces it with a single hardware texture fetch. Our method carries
+    <strong>3.2&times; fewer primitives</strong> on average, renders <strong>1.20&times; faster</strong>
+    than FastGS, and is <strong>13&times;</strong> faster than the neural renderer it replaces.
+    FastGS reaches a slightly higher mean PSNR (+0.68&nbsp;dB), consistent with its larger primitive
+    budget. Treehill is our one regression; its surfels are unusually large, so the per-fragment
+    footprint outweighs the primitive-count advantage.
+  </p>
+  <p class="tnote">
+    <em>Protocol.</em> FastGS checkpoints were trained with its own released script
+    (<code>train_base.sh</code>), which loads images at the 3DGS default (long edge capped at
+    1600&nbsp;px). We render them at the standard Mip-NeRF&nbsp;360 evaluation resolution
+    (<code>images_4</code> outdoors, <code>images_2</code> indoors) so both methods are measured on
+    identical images. Retraining FastGS at that resolution changes its primitive count by
+    &minus;8&nbsp;% and its throughput by &lt;3&nbsp;%, so this does not materially affect the
+    comparison.
+  </p>
+
   <h2>BibTeX</h2>
   <pre><code>@article{kelkar2026bake,
   title   = {Bake It Till You Make It: Ultrafast Spatial Texture-Surfel Splatting},
