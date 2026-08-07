@@ -199,10 +199,16 @@
   <ul class="highlights">
     <li><strong>View-independent texture residual.</strong> Restricting the residual to be view
       independent is what makes it bakeable, removing per-fragment neural queries at inference.</li>
-    <li><strong>Hardware-native rendering.</strong> Inference is nothing but GPU texture lookups,
-      which run fast on the texture-sampling hardware every phone already has.</li>
+    <li><strong>Hardware-native rendering.</strong> Inference is nothing but GPU texture lookups.
+      Storing the residual as block-compressed <strong>BC7</strong> means the texture unit
+      decompresses and filters it in fixed-function hardware, at the same per-fragment cost as an
+      uncompressed fetch but a fraction of the bandwidth &mdash; and the same path runs on mobile
+      GPUs, which ship the equivalent hardware (BC7 on desktop and iOS, ASTC on Android).</li>
     <li><strong>Sparse geometry.</strong> Decoupling appearance from geometry lets the surfels stay
-      sparse instead of splitting to fit texture, lowering primitive count and overdraw.</li>
+      sparse instead of splitting to fit texture, lowering primitive count. <strong>Flattened
+      beta-surfels</strong> sharpen the opacity falloff to a compact support, so each surfel covers
+      fewer fragments and far fewer of them survive the alpha cutoff &mdash; cutting overdraw, the
+      dominant per-pixel cost once primitive count is low.</li>
   </ul>
 
   <!-- =================== METHOD =================== -->
