@@ -87,16 +87,26 @@
   .btn.disabled{opacity:.5; cursor:not-allowed; pointer-events:none}
   .placeholder.tba{font-style:normal}
   /* ---------- Demo links ---------- */
-  .demogrid{display:grid; grid-template-columns:repeat(2,1fr); gap:.8rem}
-  @media (max-width:640px){ .demogrid{grid-template-columns:1fr} }
-  .demolink{display:block; background:var(--card); border:1px solid var(--line); border-radius:12px;
+  /* Horizontal carousel. Cards are fixed-width flex items that scroll-snap,
+     so any number of demos fits without reflowing the page. */
+  .demogrid{display:flex; gap:.8rem; overflow-x:auto; scroll-snap-type:x mandatory;
+            padding:.2rem .2rem 1rem; margin:0 -.2rem; -webkit-overflow-scrolling:touch;
+            scrollbar-width:thin}
+  .demogrid::-webkit-scrollbar{height:8px}
+  .demogrid::-webkit-scrollbar-thumb{background:var(--line); border-radius:4px}
+  /* flex column + stretch: every card is the same height and the body starts at
+     the same y, so titles and captions line up across cards even when one
+     caption wraps to more lines than another. */
+  .demolink{flex:0 0 clamp(240px, 62vw, 290px); scroll-snap-align:start;
+            display:flex; flex-direction:column;
+            background:var(--card); border:1px solid var(--line); border-radius:12px;
             overflow:hidden; color:var(--fg); transition:border-color .12s ease, transform .12s ease}
   .demolink:hover{border-color:var(--accent); transform:translateY(-1px); text-decoration:none}
   /* Fixed aspect + object-fit:cover so the two thumbnails line up even though
      they ship at different sizes (garden 400x259, brain 512x512 square). */
   .dl-thumb{display:block; width:100%; aspect-ratio:16/9; object-fit:cover;
             border:0; border-radius:0; border-bottom:1px solid var(--line)}
-  .dl-body{padding:.9rem 1.1rem 1.05rem}
+  .dl-body{padding:.9rem 1.1rem 1.05rem; flex:1}
   .dl-title{font-weight:700; font-size:1.1rem}
   .dl-meta{color:var(--muted); font-size:.86rem; margin-top:.2rem}
   /* ---------- Results table ---------- */
@@ -240,7 +250,7 @@
         <img class="dl-thumb" src="static/images/demos/brain.jpg" alt="Brain micro-CT scene with proxy-mesh occlusion culling" loading="lazy">
         <div class="dl-body">
         <div class="dl-title">Brain</div>
-        <div class="dl-meta">123&nbsp;MB &middot; micro-CT &middot; proxy-mesh occlusion culling</div>
+        <div class="dl-meta">123&nbsp;MB &middot; micro-CT &middot; experimental &mdash; proxy-mesh occlusion culling</div>
         </div>
       </a>
     </div>
