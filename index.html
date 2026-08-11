@@ -120,11 +120,12 @@
   .tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
   /* winning value in each metric column: soft tint + bold, so the better
      number pops without turning the table into a traffic light */
-  .restable td.best{background:rgba(26,127,55,.10); border-radius:3px}
-  @media (prefers-color-scheme:dark){ .restable td.best{background:rgba(74,194,107,.16)} }
+  /* raised specificity on purpose: a row- or column-level background rule
+     would otherwise out-specify this and silently drop the tint. */
+  .restable tbody td.best{background:rgba(26,127,55,.10); border-radius:3px}
+  @media (prefers-color-scheme:dark){ .restable tbody td.best{background:rgba(74,194,107,.16)} }
   .sumtable{font-size:.95rem; max-width:640px; margin-left:auto; margin-right:auto}
   .sumtable td:first-child,.sumtable th:first-child{font-weight:600}
-  .sumtable tbody tr:first-child td{background:var(--card)}
   .perscene{margin-top:.4rem}
   .sumtable tr.dstop td{border-top:2px solid var(--line)}
   .sumtable td[rowspan]{vertical-align:middle; font-weight:600}
