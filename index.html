@@ -118,6 +118,10 @@
   .restable td.win{color:#1a7f37; font-weight:600}
   .restable td.loss{color:#b35900; font-weight:600}
   .tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  /* winning value in each metric column: soft tint + bold, so the better
+     number pops without turning the table into a traffic light */
+  .restable td.best{background:rgba(26,127,55,.10); border-radius:3px}
+  @media (prefers-color-scheme:dark){ .restable td.best{background:rgba(74,194,107,.16)} }
   .sumtable{font-size:.95rem; max-width:640px; margin-left:auto; margin-right:auto}
   .sumtable td:first-child,.sumtable th:first-child{font-weight:600}
   .sumtable tbody tr:first-child td{background:var(--card)}
@@ -299,12 +303,12 @@
       <tr><th>Benchmark</th><th>Method</th><th class="n">Primitives</th><th class="n">FPS</th><th class="n">Speed-up</th><th class="n">PSNR</th><th class="n">SSIM</th><th class="n">LPIPS</th></tr>
     </thead>
     <tbody>
-      <tr class="dstop"><td rowspan="2">Mip-NeRF&nbsp;360<br><span class="dsn">9 scenes</span></td><td><strong>Ours</strong></td><td class="n"><strong>123,051</strong></td><td class="n"><strong>1479</strong></td><td class="n win"><strong>1.22&times;</strong></td><td class="n">27.28</td><td class="n">0.7901</td><td class="n"><strong>0.2122</strong></td></tr>
-      <tr><td>FastGS</td><td class="n">394,189</td><td class="n">1215</td><td class="n">&mdash;</td><td class="n"><strong>27.48</strong></td><td class="n"><strong>0.7973</strong></td><td class="n">0.2603</td></tr>
-      <tr class="dstop"><td rowspan="2">Tanks &amp; Temples<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n"><strong>86,746</strong></td><td class="n"><strong>2138</strong></td><td class="n win"><strong>1.72&times;</strong></td><td class="n"><strong>24.10</strong></td><td class="n"><strong>0.8509</strong></td><td class="n"><strong>0.1449</strong></td></tr>
+      <tr class="dstop"><td rowspan="2">Mip-NeRF&nbsp;360<br><span class="dsn">9 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>123,051</strong></td><td class="n best"><strong>1479</strong></td><td class="n win"><strong>1.22&times;</strong></td><td class="n">27.28</td><td class="n">0.7901</td><td class="n best"><strong>0.2122</strong></td></tr>
+      <tr><td>FastGS</td><td class="n">394,189</td><td class="n">1215</td><td class="n">&mdash;</td><td class="n best"><strong>27.48</strong></td><td class="n best"><strong>0.7973</strong></td><td class="n">0.2603</td></tr>
+      <tr class="dstop"><td rowspan="2">Tanks &amp; Temples<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>86,746</strong></td><td class="n best"><strong>2138</strong></td><td class="n win"><strong>1.72&times;</strong></td><td class="n best"><strong>24.10</strong></td><td class="n best"><strong>0.8509</strong></td><td class="n best"><strong>0.1449</strong></td></tr>
       <tr><td>FastGS</td><td class="n">242,133</td><td class="n">1245</td><td class="n">&mdash;</td><td class="n">24.02</td><td class="n">0.8409</td><td class="n">0.2102</td></tr>
-      <tr class="dstop"><td rowspan="2">Deep Blending<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n"><strong>66,622</strong></td><td class="n"><strong>1946</strong></td><td class="n win"><strong>1.34&times;</strong></td><td class="n">29.98</td><td class="n">0.8919</td><td class="n"><strong>0.2200</strong></td></tr>
-      <tr><td>FastGS</td><td class="n">216,748</td><td class="n">1452</td><td class="n">&mdash;</td><td class="n"><strong>30.16</strong></td><td class="n"><strong>0.9053</strong></td><td class="n">0.2693</td></tr>
+      <tr class="dstop"><td rowspan="2">Deep Blending<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>66,622</strong></td><td class="n best"><strong>1946</strong></td><td class="n win"><strong>1.34&times;</strong></td><td class="n">29.98</td><td class="n">0.8919</td><td class="n best"><strong>0.2200</strong></td></tr>
+      <tr><td>FastGS</td><td class="n">216,748</td><td class="n">1452</td><td class="n">&mdash;</td><td class="n best"><strong>30.16</strong></td><td class="n best"><strong>0.9053</strong></td><td class="n">0.2693</td></tr>
     </tbody>
   </table>
   </div>
@@ -322,15 +326,15 @@
           <th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th></tr>
     </thead>
     <tbody>
-      <tr><td>bicycle</td><td class="n">1237&times;822</td><td class="n">160,097</td><td class="n">539,624</td><td class="n"><strong>1461</strong></td><td class="n">1204</td><td class="n win">1.21&times;</td><td class="n">24.44</td><td class="n"><strong>24.62</strong></td><td class="n"><strong>0.2383</strong></td><td class="n">0.2874</td></tr>
-      <tr><td>bonsai</td><td class="n">1559&times;1039</td><td class="n">92,281</td><td class="n">275,719</td><td class="n"><strong>1279</strong></td><td class="n">1241</td><td class="n win">1.03&times;</td><td class="n"><strong>32.63</strong></td><td class="n">32.12</td><td class="n"><strong>0.1704</strong></td><td class="n">0.2171</td></tr>
-      <tr><td>counter</td><td class="n">1558&times;1038</td><td class="n">68,394</td><td class="n">208,171</td><td class="n"><strong>1525</strong></td><td class="n">1207</td><td class="n win">1.26&times;</td><td class="n"><strong>29.32</strong></td><td class="n">29.08</td><td class="n"><strong>0.1833</strong></td><td class="n">0.2218</td></tr>
-      <tr><td>flowers</td><td class="n">1256&times;828</td><td class="n">184,511</td><td class="n">489,951</td><td class="n"><strong>1260</strong></td><td class="n">1173</td><td class="n win">1.07&times;</td><td class="n">20.78</td><td class="n"><strong>21.31</strong></td><td class="n"><strong>0.3200</strong></td><td class="n">0.3887</td></tr>
-      <tr><td>garden</td><td class="n">1297&times;840</td><td class="n">148,658</td><td class="n">660,711</td><td class="n"><strong>1894</strong></td><td class="n">1145</td><td class="n win">1.65&times;</td><td class="n">27.03</td><td class="n"><strong>27.32</strong></td><td class="n"><strong>0.1288</strong></td><td class="n">0.1577</td></tr>
-      <tr><td>kitchen</td><td class="n">1558&times;1039</td><td class="n">119,462</td><td class="n">379,671</td><td class="n"><strong>1328</strong></td><td class="n">1059</td><td class="n win">1.25&times;</td><td class="n">31.47</td><td class="n"><strong>31.74</strong></td><td class="n"><strong>0.1233</strong></td><td class="n">0.1388</td></tr>
-      <tr><td>room</td><td class="n">1557&times;1038</td><td class="n">62,947</td><td class="n">207,167</td><td class="n"><strong>1900</strong></td><td class="n">1343</td><td class="n win">1.41&times;</td><td class="n">31.56</td><td class="n"><strong>31.74</strong></td><td class="n"><strong>0.1891</strong></td><td class="n">0.2436</td></tr>
-      <tr><td>stump</td><td class="n">1245&times;825</td><td class="n">96,365</td><td class="n">392,348</td><td class="n"><strong>1397</strong></td><td class="n">1276</td><td class="n win">1.10&times;</td><td class="n">25.76</td><td class="n"><strong>26.54</strong></td><td class="n"><strong>0.2632</strong></td><td class="n">0.2726</td></tr>
-      <tr><td>treehill</td><td class="n">1267&times;832</td><td class="n">174,744</td><td class="n">394,335</td><td class="n"><strong>1271</strong></td><td class="n">1286</td><td class="n loss">0.99&times;</td><td class="n">22.56</td><td class="n"><strong>22.85</strong></td><td class="n"><strong>0.2937</strong></td><td class="n">0.4146</td></tr>
+      <tr><td>bicycle</td><td class="n">1237&times;822</td><td class="n">160,097</td><td class="n">539,624</td><td class="n best"><strong>1461</strong></td><td class="n">1204</td><td class="n win">1.21&times;</td><td class="n">24.44</td><td class="n best"><strong>24.62</strong></td><td class="n best"><strong>0.2383</strong></td><td class="n">0.2874</td></tr>
+      <tr><td>bonsai</td><td class="n">1559&times;1039</td><td class="n">92,281</td><td class="n">275,719</td><td class="n best"><strong>1279</strong></td><td class="n">1241</td><td class="n win">1.03&times;</td><td class="n best"><strong>32.63</strong></td><td class="n">32.12</td><td class="n best"><strong>0.1704</strong></td><td class="n">0.2171</td></tr>
+      <tr><td>counter</td><td class="n">1558&times;1038</td><td class="n">68,394</td><td class="n">208,171</td><td class="n best"><strong>1525</strong></td><td class="n">1207</td><td class="n win">1.26&times;</td><td class="n best"><strong>29.32</strong></td><td class="n">29.08</td><td class="n best"><strong>0.1833</strong></td><td class="n">0.2218</td></tr>
+      <tr><td>flowers</td><td class="n">1256&times;828</td><td class="n">184,511</td><td class="n">489,951</td><td class="n best"><strong>1260</strong></td><td class="n">1173</td><td class="n win">1.07&times;</td><td class="n">20.78</td><td class="n best"><strong>21.31</strong></td><td class="n best"><strong>0.3200</strong></td><td class="n">0.3887</td></tr>
+      <tr><td>garden</td><td class="n">1297&times;840</td><td class="n">148,658</td><td class="n">660,711</td><td class="n best"><strong>1894</strong></td><td class="n">1145</td><td class="n win">1.65&times;</td><td class="n">27.03</td><td class="n best"><strong>27.32</strong></td><td class="n best"><strong>0.1288</strong></td><td class="n">0.1577</td></tr>
+      <tr><td>kitchen</td><td class="n">1558&times;1039</td><td class="n">119,462</td><td class="n">379,671</td><td class="n best"><strong>1328</strong></td><td class="n">1059</td><td class="n win">1.25&times;</td><td class="n">31.47</td><td class="n best"><strong>31.74</strong></td><td class="n best"><strong>0.1233</strong></td><td class="n">0.1388</td></tr>
+      <tr><td>room</td><td class="n">1557&times;1038</td><td class="n">62,947</td><td class="n">207,167</td><td class="n best"><strong>1900</strong></td><td class="n">1343</td><td class="n win">1.41&times;</td><td class="n">31.56</td><td class="n best"><strong>31.74</strong></td><td class="n best"><strong>0.1891</strong></td><td class="n">0.2436</td></tr>
+      <tr><td>stump</td><td class="n">1245&times;825</td><td class="n">96,365</td><td class="n">392,348</td><td class="n best"><strong>1397</strong></td><td class="n">1276</td><td class="n win">1.10&times;</td><td class="n">25.76</td><td class="n best"><strong>26.54</strong></td><td class="n best"><strong>0.2632</strong></td><td class="n">0.2726</td></tr>
+      <tr><td>treehill</td><td class="n">1267&times;832</td><td class="n">174,744</td><td class="n">394,335</td><td class="n">1271</td><td class="n best"><strong>1286</strong></td><td class="n loss">0.99&times;</td><td class="n">22.56</td><td class="n best"><strong>22.85</strong></td><td class="n best"><strong>0.2937</strong></td><td class="n">0.4146</td></tr>
     </tbody>
   </table>
   </div>
@@ -345,8 +349,8 @@
           <th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th></tr>
     </thead>
     <tbody>
-      <tr><td>truck</td><td class="n">979&times;546</td><td class="n">85,413</td><td class="n">252,868</td><td class="n"><strong>2315</strong></td><td class="n">1343</td><td class="n win">1.72&times;</td><td class="n">25.60</td><td class="n"><strong>25.70</strong></td><td class="n"><strong>0.1170</strong></td><td class="n">0.1775</td></tr>
-      <tr><td>train</td><td class="n">980&times;545</td><td class="n">88,080</td><td class="n">231,398</td><td class="n"><strong>1961</strong></td><td class="n">1147</td><td class="n win">1.71&times;</td><td class="n"><strong>22.61</strong></td><td class="n">22.33</td><td class="n"><strong>0.1728</strong></td><td class="n">0.2429</td></tr>
+      <tr><td>truck</td><td class="n">979&times;546</td><td class="n">85,413</td><td class="n">252,868</td><td class="n best"><strong>2315</strong></td><td class="n">1343</td><td class="n win">1.72&times;</td><td class="n">25.60</td><td class="n best"><strong>25.70</strong></td><td class="n best"><strong>0.1170</strong></td><td class="n">0.1775</td></tr>
+      <tr><td>train</td><td class="n">980&times;545</td><td class="n">88,080</td><td class="n">231,398</td><td class="n best"><strong>1961</strong></td><td class="n">1147</td><td class="n win">1.71&times;</td><td class="n best"><strong>22.61</strong></td><td class="n">22.33</td><td class="n best"><strong>0.1728</strong></td><td class="n">0.2429</td></tr>
     </tbody>
   </table>
   </div>
@@ -361,8 +365,8 @@
           <th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th></tr>
     </thead>
     <tbody>
-      <tr><td>playroom</td><td class="n">1264&times;832</td><td class="n">67,156</td><td class="n">181,430</td><td class="n"><strong>1801</strong></td><td class="n">1503</td><td class="n win">1.20&times;</td><td class="n">30.39</td><td class="n"><strong>30.66</strong></td><td class="n"><strong>0.2082</strong></td><td class="n">0.2654</td></tr>
-      <tr><td>drjohnson</td><td class="n">1332&times;876</td><td class="n">66,087</td><td class="n">252,067</td><td class="n"><strong>2090</strong></td><td class="n">1401</td><td class="n win">1.49&times;</td><td class="n">29.57</td><td class="n"><strong>29.65</strong></td><td class="n"><strong>0.2317</strong></td><td class="n">0.2732</td></tr>
+      <tr><td>playroom</td><td class="n">1264&times;832</td><td class="n">67,156</td><td class="n">181,430</td><td class="n best"><strong>1801</strong></td><td class="n">1503</td><td class="n win">1.20&times;</td><td class="n">30.39</td><td class="n best"><strong>30.66</strong></td><td class="n best"><strong>0.2082</strong></td><td class="n">0.2654</td></tr>
+      <tr><td>drjohnson</td><td class="n">1332&times;876</td><td class="n">66,087</td><td class="n">252,067</td><td class="n best"><strong>2090</strong></td><td class="n">1401</td><td class="n win">1.49&times;</td><td class="n">29.57</td><td class="n best"><strong>29.65</strong></td><td class="n best"><strong>0.2317</strong></td><td class="n">0.2732</td></tr>
     </tbody>
   </table>
   </div>
