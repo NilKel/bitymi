@@ -7,11 +7,11 @@
      EDIT THIS: page title shown in the browser tab / search results
      ============================================================ -->
 <title>Bake It Till You Make It: Ultrafast Spatial Texture-Surfel Splatting</title>
-<meta name="description" content="Ultrafast novel view synthesis by baking a view-independent texture residual, rendering with pure hardware texture lookups.">
+<meta name="description" content="Ultrafast novel view synthesis by baking a view-independent texture residual: better perceptual quality than FastGS on all 13 scenes of three benchmarks, 1.2-1.7x faster, ~3x fewer primitives.">
 
 <!-- Open Graph / social preview. EDIT the og:image URL and og:url. -->
 <meta property="og:title" content="Bake It Till You Make It">
-<meta property="og:description" content="Ultrafast texture-surfel splatting: 1456 mean FPS on Mip-NeRF 360, real-time on a phone.">
+<meta property="og:description" content="Ultrafast texture-surfel splatting: better LPIPS than FastGS on all 13 scenes across three benchmarks, 1.2-1.7x faster, real-time on a phone.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nilkel.github.io/bitymi/">
 <meta property="og:image" content="https://nilkel.github.io/bitymi/static/images/teaser.png">
@@ -118,6 +118,11 @@
   .restable td.win{color:#1a7f37; font-weight:600}
   .restable td.loss{color:#b35900; font-weight:600}
   .tablewrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+  .tcenter{text-align:center; margin:.2rem 0 .4rem}
+  .toggle{background:transparent; color:var(--link); border:1px solid var(--line);
+          border-radius:999px; padding:.3rem .9rem; font-size:.82rem; font-weight:600;
+          cursor:pointer; font-family:inherit}
+  .toggle:hover{border-color:var(--accent); color:var(--accent)}
   .tnote{font-size:.82rem; color:var(--muted); line-height:1.5; margin:.5rem 0 0}
   @media (prefers-color-scheme:dark){ .restable td.win{color:#4ac26b} .restable td.loss{color:#e8a33d} }
   /* ---------- BibTeX ---------- */
@@ -175,9 +180,9 @@
 
   <!-- =================== STATS =================== EDIT numbers -->
   <div class="stats">
-    <div class="stat"><div class="num">1456</div><div class="lbl">mean FPS on RTX 5090<br>(Mip-NeRF 360, 9 scenes)</div></div>
-    <div class="stat"><div class="num">Real-time</div><div class="lbl">on M3 MacBook<br>&amp; Galaxy S24</div></div>
-    <div class="stat"><div class="num">No MLP</div><div class="lbl">pure texture<br>lookups at inference</div></div>
+    <div class="stat"><div class="num">13/13</div><div class="lbl">scenes with better LPIPS<br>than FastGS (3 benchmarks)</div></div>
+    <div class="stat"><div class="num">1.2&ndash;1.7&times;</div><div class="lbl">faster than FastGS, the fastest<br>untextured method, at ~3&times; fewer prims</div></div>
+    <div class="stat"><div class="num">No MLP</div><div class="lbl">pure texture lookups<br>&mdash; real-time on a phone</div></div>
   </div>
 
   <!-- =================== ABSTRACT =================== -->
@@ -272,10 +277,16 @@
 
   <!-- =================== RESULTS =================== -->
   <h2>Results</h2>
-  <p>Rendering throughput on the Mip-NeRF&nbsp;360 benchmark, measured on a single RTX&nbsp;5090.
-     All timings use per-frame <code>cuda.Event</code> pairs, 50 warm-up and 400 timed frames,
-     over each scene's held-out test cameras.</p>
+  <p>Rendering throughput on three standard benchmarks &mdash; Mip-NeRF&nbsp;360, Tanks&nbsp;&amp;
+     Temples and Deep Blending &mdash; measured on a single RTX&nbsp;5090. All timings use per-frame
+     <code>cuda.Event</code> pairs over each scene's held-out test cameras, cycling through the full
+     test set so both methods are timed on identical images. We compare against
+     <strong>FastGS</strong>, the fastest untextured Gaussian-splatting method: it reaches its speed
+     by optimising the per-primitive cost of a conventional splat representation, whereas we change
+     what a primitive stores &mdash; moving high-frequency appearance into a baked texture so far
+     fewer, cheaper primitives are needed.</p>
 
+  <h3>Mip-NeRF 360</h3>
   <div class="tablewrap">
   <table class="restable">
     <thead>
@@ -286,40 +297,101 @@
         <th class="n">PSNR (ours)</th><th class="n">PSNR (FastGS)</th><th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th>
       </tr>
     </thead>
+    <tbody class="perscene" id="ps-mip360" hidden>
+      <tr><td>bicycle</td><td class="n">1237×822</td><td class="n">160,097</td><td class="n">539,624</td><td class="n">111</td><td class="n"><strong>1461</strong></td><td class="n">1204</td><td class="n win">1.21&times;</td><td class="n">24.44</td><td class="n"><strong>24.62</strong></td><td class="n"><strong>0.2383</strong></td><td class="n">0.2874</td></tr>
+      <tr><td>bonsai</td><td class="n">1559×1039</td><td class="n">92,281</td><td class="n">275,719</td><td class="n">117</td><td class="n"><strong>1279</strong></td><td class="n">1241</td><td class="n win">1.03&times;</td><td class="n"><strong>32.63</strong></td><td class="n">32.12</td><td class="n"><strong>0.1704</strong></td><td class="n">0.2171</td></tr>
+      <tr><td>counter</td><td class="n">1558×1038</td><td class="n">68,394</td><td class="n">208,171</td><td class="n">108</td><td class="n"><strong>1525</strong></td><td class="n">1207</td><td class="n win">1.26&times;</td><td class="n"><strong>29.32</strong></td><td class="n">29.08</td><td class="n"><strong>0.1833</strong></td><td class="n">0.2218</td></tr>
+      <tr><td>flowers</td><td class="n">1256×828</td><td class="n">184,511</td><td class="n">489,951</td><td class="n">100</td><td class="n"><strong>1260</strong></td><td class="n">1173</td><td class="n win">1.07&times;</td><td class="n">20.78</td><td class="n"><strong>21.31</strong></td><td class="n"><strong>0.3200</strong></td><td class="n">0.3887</td></tr>
+      <tr><td>garden</td><td class="n">1297×840</td><td class="n">148,658</td><td class="n">660,711</td><td class="n">117</td><td class="n"><strong>1894</strong></td><td class="n">1145</td><td class="n win">1.65&times;</td><td class="n">27.03</td><td class="n"><strong>27.32</strong></td><td class="n"><strong>0.1288</strong></td><td class="n">0.1577</td></tr>
+      <tr><td>kitchen</td><td class="n">1558×1039</td><td class="n">119,462</td><td class="n">379,671</td><td class="n">93</td><td class="n"><strong>1328</strong></td><td class="n">1059</td><td class="n win">1.25&times;</td><td class="n">31.47</td><td class="n"><strong>31.74</strong></td><td class="n"><strong>0.1233</strong></td><td class="n">0.1388</td></tr>
+      <tr><td>room</td><td class="n">1557×1038</td><td class="n">62,947</td><td class="n">207,167</td><td class="n">134</td><td class="n"><strong>1900</strong></td><td class="n">1343</td><td class="n win">1.41&times;</td><td class="n">31.56</td><td class="n"><strong>31.74</strong></td><td class="n"><strong>0.1891</strong></td><td class="n">0.2436</td></tr>
+      <tr><td>stump</td><td class="n">1245×825</td><td class="n">96,365</td><td class="n">392,348</td><td class="n">131</td><td class="n"><strong>1397</strong></td><td class="n">1276</td><td class="n win">1.10&times;</td><td class="n">25.76</td><td class="n"><strong>26.54</strong></td><td class="n"><strong>0.2632</strong></td><td class="n">0.2726</td></tr>
+      <tr><td>treehill</td><td class="n">1267×832</td><td class="n">174,744</td><td class="n">394,335</td><td class="n">98</td><td class="n"><strong>1271</strong></td><td class="n">1286</td><td class="n loss">0.99&times;</td><td class="n">22.56</td><td class="n"><strong>22.85</strong></td><td class="n"><strong>0.2937</strong></td><td class="n">0.4146</td></tr>
+    </tbody>
     <tbody>
-      <tr><td>bicycle</td><td class="n">1237×822</td><td class="n">160,835</td><td class="n">539,624</td><td class="n">111</td><td class="n"><strong>1385</strong></td><td class="n">1204</td><td class="n win">1.15×</td><td class="n">23.91</td><td class="n">24.62</td><td class="n"><strong>0.2866</strong></td><td class="n">0.2874</td></tr>
-      <tr><td>bonsai</td><td class="n">1559×1039</td><td class="n">92,489</td><td class="n">275,719</td><td class="n">117</td><td class="n"><strong>1261</strong></td><td class="n">1241</td><td class="n win">1.02×</td><td class="n">31.81</td><td class="n">32.12</td><td class="n"><strong>0.2077</strong></td><td class="n">0.2171</td></tr>
-      <tr><td>counter</td><td class="n">1558×1038</td><td class="n">68,466</td><td class="n">208,171</td><td class="n">108</td><td class="n"><strong>1442</strong></td><td class="n">1207</td><td class="n win">1.19×</td><td class="n">28.90</td><td class="n">29.08</td><td class="n"><strong>0.2211</strong></td><td class="n">0.2218</td></tr>
-      <tr><td>flowers</td><td class="n">1256×828</td><td class="n">184,951</td><td class="n">489,951</td><td class="n">100</td><td class="n"><strong>1291</strong></td><td class="n">1173</td><td class="n win">1.10×</td><td class="n">20.62</td><td class="n">21.31</td><td class="n"><strong>0.3505</strong></td><td class="n">0.3887</td></tr>
-      <tr><td>garden</td><td class="n">1297×840</td><td class="n">148,803</td><td class="n">660,711</td><td class="n">117</td><td class="n"><strong>1943</strong></td><td class="n">1145</td><td class="n win">1.70×</td><td class="n">26.71</td><td class="n">27.32</td><td class="n">0.1694</td><td class="n"><strong>0.1577</strong></td></tr>
-      <tr><td>kitchen</td><td class="n">1558×1039</td><td class="n">119,525</td><td class="n">379,671</td><td class="n">93</td><td class="n"><strong>1495</strong></td><td class="n">1059</td><td class="n win">1.41×</td><td class="n">30.65</td><td class="n">31.74</td><td class="n">0.1585</td><td class="n"><strong>0.1388</strong></td></tr>
-      <tr><td>room</td><td class="n">1557×1038</td><td class="n">63,164</td><td class="n">207,167</td><td class="n">133</td><td class="n"><strong>1792</strong></td><td class="n">1343</td><td class="n win">1.33×</td><td class="n">30.73</td><td class="n">31.74</td><td class="n"><strong>0.2341</strong></td><td class="n">0.2436</td></tr>
-      <tr><td>stump</td><td class="n">1245×825</td><td class="n">96,471</td><td class="n">392,348</td><td class="n">132</td><td class="n"><strong>1394</strong></td><td class="n">1276</td><td class="n win">1.09×</td><td class="n">25.54</td><td class="n">26.54</td><td class="n"><strong>0.2707</strong></td><td class="n">0.2726</td></tr>
-      <tr><td>treehill</td><td class="n">1267×832</td><td class="n">175,459</td><td class="n">394,335</td><td class="n">98</td><td class="n"><strong>1105</strong></td><td class="n">1286</td><td class="n loss">0.86×</td><td class="n">22.29</td><td class="n">22.85</td><td class="n"><strong>0.3417</strong></td><td class="n">0.4146</td></tr>
-      <tr class="mean"><td><strong>mean</strong></td><td class="n">—</td><td class="n"><strong>123,351</strong></td><td class="n"><strong>394,188</strong></td><td class="n"><strong>112</strong></td><td class="n"><strong>1456</strong></td><td class="n"><strong>1215</strong></td><td class="n win"><strong>1.20×</strong></td><td class="n"><strong>26.80</strong></td><td class="n"><strong>27.48</strong></td><td class="n"><strong>0.2489</strong></td><td class="n"><strong>0.2603</strong></td></tr>
+      <tr class="mean"><td><strong>mean</strong></td><td class="n">&mdash;</td><td class="n"><strong>123,051</strong></td><td class="n"><strong>394,189</strong></td><td class="n"><strong>112</strong></td><td class="n"><strong>1479</strong></td><td class="n"><strong>1215</strong></td><td class="n win"><strong>1.22&times;</strong></td><td class="n"><strong>27.28</strong></td><td class="n"><strong>27.48</strong></td><td class="n"><strong>0.2122</strong></td><td class="n"><strong>0.2603</strong></td></tr>
     </tbody>
   </table>
   </div>
+  <p class="tcenter"><button class="toggle" type="button" data-target="ps-mip360" aria-expanded="false">Show per-scene results</button></p>
 
   <p class="tnote">
     <strong>Neural FPS</strong> is our own pre-baking renderer, which evaluates the hash-grid and MLP
     per fragment; baking replaces it with a single hardware texture fetch. Our method carries
-    <strong>3.2&times; fewer primitives</strong> on average, renders <strong>1.20&times; faster</strong>
+    <strong>3.2&times; fewer primitives</strong> on average, renders <strong>1.22&times; faster</strong>
     than FastGS, and is <strong>13&times;</strong> faster than the neural renderer it replaces.
-    FastGS reaches a slightly higher mean PSNR (+0.68&nbsp;dB), consistent with its larger primitive
-    budget, but our method is better on <strong>LPIPS</strong> (0.2489 vs 0.2603, better on 7 of 9
-    scenes) &mdash; the perceptual metric favours us despite the PSNR gap. Treehill is our one regression; its surfels are unusually large, so the per-fragment
-    footprint outweighs the primitive-count advantage.
+    FastGS reaches a slightly higher mean PSNR (+0.20&nbsp;dB), consistent with its larger primitive
+    budget, but our method is better on <strong>LPIPS</strong> (0.2122 vs 0.2603, better on
+    <strong>all 9 scenes</strong>) &mdash; the perceptual metric favours us clearly despite the small
+    PSNR gap. Treehill is our one throughput regression; its surfels are unusually large, so the
+    per-fragment footprint outweighs the primitive-count advantage.
+  </p>
+  <p class="tnote">
+    <em>Texture finetune.</em> The baked atlas is initialised from the trained neural residual and
+    then <strong>finetuned against the training images</strong> for a short schedule, with geometry
+    and view-dependent colour frozen so only the texels move. Baking alone can only lose information
+    relative to its teacher; optimising the texels directly recovers it and then exceeds it, worth
+    <strong>+0.49&nbsp;dB</strong> and <strong>&minus;0.037 LPIPS</strong> on average over the raw
+    bake at identical primitive count, storage and frame rate.
   </p>
   <p class="tnote">
     <em>Protocol.</em> FastGS checkpoints were trained with its own released script
     (<code>train_base.sh</code>), which loads images at the 3DGS default (long edge capped at
-    1600&nbsp;px). We render them at the standard Mip-NeRF&nbsp;360 evaluation resolution
+    1600&nbsp;px). On Mip-NeRF&nbsp;360 we render them at the standard evaluation resolution
     (<code>images_4</code> outdoors, <code>images_2</code> indoors) so both methods are measured on
-    identical images. Retraining FastGS at that resolution changes its primitive count by
+    identical images; retraining FastGS at that resolution changes its primitive count by
     &minus;8&nbsp;% and its throughput by &lt;3&nbsp;%, so this does not materially affect the
-    comparison.
+    comparison. On Tanks&nbsp;&amp;&nbsp;Temples and Deep Blending both methods already use the same
+    native resolution, so no adjustment is needed. FastGS runs at its own released default
+    (<code>mult&nbsp;=&nbsp;0.5</code>); at <code>mult&nbsp;=&nbsp;1.0</code> it gains ~0.2&nbsp;dB
+    PSNR and loses ~11&nbsp;% throughput, with LPIPS essentially unchanged.
   </p>
+
+  <h3>Tanks &amp; Temples</h3>
+  <p>Same protocol, on the two standard Tanks&nbsp;&amp;&nbsp;Temples scenes. Here we lead on PSNR as well as LPIPS, and the throughput margin is the largest of the three benchmarks &mdash; <strong>1.72&times;</strong> FastGS at <strong>2.8&times; fewer primitives</strong>.</p>
+  <div class="tablewrap">
+  <table class="restable">
+    <thead>
+      <tr>
+        <th>Scene</th><th class="n">Resolution</th>
+        <th class="n">Prims (ours)</th><th class="n">Prims (FastGS)</th>
+        <th class="n">Neural FPS</th><th class="n">Ours FPS</th><th class="n">FastGS FPS</th><th class="n">Speed-up</th>
+        <th class="n">PSNR (ours)</th><th class="n">PSNR (FastGS)</th><th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th>
+      </tr>
+    </thead>
+    <tbody class="perscene" id="ps-tnt" hidden>
+      <tr><td>truck</td><td class="n">979×546</td><td class="n">85,413</td><td class="n">252,868</td><td class="n">154</td><td class="n"><strong>2315</strong></td><td class="n">1343</td><td class="n win">1.72&times;</td><td class="n">25.60</td><td class="n"><strong>25.70</strong></td><td class="n"><strong>0.1170</strong></td><td class="n">0.1775</td></tr>
+      <tr><td>train</td><td class="n">980×545</td><td class="n">88,080</td><td class="n">231,398</td><td class="n">158</td><td class="n"><strong>1961</strong></td><td class="n">1147</td><td class="n win">1.71&times;</td><td class="n"><strong>22.61</strong></td><td class="n">22.33</td><td class="n"><strong>0.1728</strong></td><td class="n">0.2429</td></tr>
+    </tbody>
+    <tbody>
+      <tr class="mean"><td><strong>mean</strong></td><td class="n">&mdash;</td><td class="n"><strong>86,746</strong></td><td class="n"><strong>242,133</strong></td><td class="n"><strong>156</strong></td><td class="n"><strong>2138</strong></td><td class="n"><strong>1245</strong></td><td class="n win"><strong>1.72&times;</strong></td><td class="n"><strong>24.10</strong></td><td class="n"><strong>24.02</strong></td><td class="n"><strong>0.1449</strong></td><td class="n"><strong>0.2102</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="tcenter"><button class="toggle" type="button" data-target="ps-tnt" aria-expanded="false">Show per-scene results</button></p>
+
+  <h3>Deep Blending</h3>
+  <p>The two Deep Blending scenes. FastGS holds a small PSNR lead (+0.18&nbsp;dB) on these dim, heavily-textured interiors, while our LPIPS is <strong>18&nbsp;% better</strong> and we render <strong>1.34&times;</strong> faster with <strong>3.3&times; fewer primitives</strong>.</p>
+  <div class="tablewrap">
+  <table class="restable">
+    <thead>
+      <tr>
+        <th>Scene</th><th class="n">Resolution</th>
+        <th class="n">Prims (ours)</th><th class="n">Prims (FastGS)</th>
+        <th class="n">Neural FPS</th><th class="n">Ours FPS</th><th class="n">FastGS FPS</th><th class="n">Speed-up</th>
+        <th class="n">PSNR (ours)</th><th class="n">PSNR (FastGS)</th><th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th>
+      </tr>
+    </thead>
+    <tbody class="perscene" id="ps-db" hidden>
+      <tr><td>playroom</td><td class="n">1264×832</td><td class="n">67,156</td><td class="n">181,430</td><td class="n">153</td><td class="n"><strong>1801</strong></td><td class="n">1503</td><td class="n win">1.20&times;</td><td class="n">30.39</td><td class="n"><strong>30.66</strong></td><td class="n"><strong>0.2082</strong></td><td class="n">0.2654</td></tr>
+      <tr><td>drjohnson</td><td class="n">1332×876</td><td class="n">66,087</td><td class="n">252,067</td><td class="n">155</td><td class="n"><strong>2090</strong></td><td class="n">1401</td><td class="n win">1.49&times;</td><td class="n">29.57</td><td class="n"><strong>29.65</strong></td><td class="n"><strong>0.2317</strong></td><td class="n">0.2732</td></tr>
+    </tbody>
+    <tbody>
+      <tr class="mean"><td><strong>mean</strong></td><td class="n">&mdash;</td><td class="n"><strong>66,622</strong></td><td class="n"><strong>216,748</strong></td><td class="n"><strong>154</strong></td><td class="n"><strong>1946</strong></td><td class="n"><strong>1452</strong></td><td class="n win"><strong>1.34&times;</strong></td><td class="n"><strong>29.98</strong></td><td class="n"><strong>30.16</strong></td><td class="n"><strong>0.2200</strong></td><td class="n"><strong>0.2693</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="tcenter"><button class="toggle" type="button" data-target="ps-db" aria-expanded="false">Show per-scene results</button></p>
 
   <h2>BibTeX</h2>
   <pre><code>@article{kelkar2026bake,
@@ -340,5 +412,18 @@
   </div>
 </footer>
 
+
+<script>
+  // Per-scene rows are collapsed by default; the mean row is always visible.
+  document.querySelectorAll('.toggle').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var t = document.getElementById(b.dataset.target);
+      var open = t.hasAttribute('hidden');
+      if (open) { t.removeAttribute('hidden'); } else { t.setAttribute('hidden', ''); }
+      b.setAttribute('aria-expanded', String(open));
+      b.textContent = open ? 'Hide per-scene results' : 'Show per-scene results';
+    });
+  });
+</script>
 </body>
 </html>
