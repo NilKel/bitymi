@@ -122,6 +122,7 @@
      number pops without turning the table into a traffic light */
   /* raised specificity on purpose: a row- or column-level background rule
      would otherwise out-specify this and silently drop the tint. */
+  .arw{color:var(--muted); font-weight:400; font-size:.9em}
   .restable tbody td.best{background:rgba(26,127,55,.10); border-radius:3px}
   @media (prefers-color-scheme:dark){ .restable tbody td.best{background:rgba(74,194,107,.16)} }
   .sumtable{font-size:.95rem; max-width:640px; margin-left:auto; margin-right:auto}
@@ -301,7 +302,7 @@
   <div class="tablewrap">
   <table class="restable sumtable">
     <thead>
-      <tr><th>Benchmark</th><th>Method</th><th class="n">Primitives</th><th class="n">FPS</th><th class="n">Speed-up</th><th class="n">PSNR</th><th class="n">SSIM</th><th class="n">LPIPS</th></tr>
+      <tr><th>Benchmark</th><th>Method</th><th class="n">Primitives&nbsp;<span class="arw">&darr;</span></th><th class="n">FPS&nbsp;<span class="arw">&uarr;</span></th><th class="n">Speed-up&nbsp;<span class="arw">&uarr;</span></th><th class="n">PSNR&nbsp;<span class="arw">&uarr;</span></th><th class="n">SSIM&nbsp;<span class="arw">&uarr;</span></th><th class="n">LPIPS&nbsp;<span class="arw">&darr;</span></th></tr>
     </thead>
     <tbody>
       <tr class="dstop"><td rowspan="2">Mip-NeRF&nbsp;360<br><span class="dsn">9 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>123,051</strong></td><td class="n best"><strong>1479</strong></td><td class="n win"><strong>1.22&times;</strong></td><td class="n">27.28</td><td class="n">0.7901</td><td class="n best"><strong>0.2122</strong></td></tr>
@@ -321,10 +322,10 @@
   <table class="restable">
     <thead>
       <tr><th>Scene</th><th class="n">Resolution</th>
-          <th class="n">Prims (ours)</th><th class="n">Prims (FastGS)</th>
-          <th class="n">FPS (ours)</th><th class="n">FPS (FastGS)</th><th class="n">Speed-up</th>
-          <th class="n">PSNR (ours)</th><th class="n">PSNR (FastGS)</th>
-          <th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th></tr>
+          <th class="n">Prims <span class="arw">&darr;</span> (ours)</th><th class="n">Prims <span class="arw">&darr;</span> (FastGS)</th>
+          <th class="n">FPS <span class="arw">&uarr;</span> (ours)</th><th class="n">FPS <span class="arw">&uarr;</span> (FastGS)</th><th class="n">Speed-up <span class="arw">&uarr;</span></th>
+          <th class="n">PSNR <span class="arw">&uarr;</span> (ours)</th><th class="n">PSNR <span class="arw">&uarr;</span> (FastGS)</th>
+          <th class="n">LPIPS <span class="arw">&darr;</span> (ours)</th><th class="n">LPIPS <span class="arw">&darr;</span> (FastGS)</th></tr>
     </thead>
     <tbody>
       <tr><td>bicycle</td><td class="n">1237&times;822</td><td class="n">160,097</td><td class="n">539,624</td><td class="n best"><strong>1461</strong></td><td class="n">1204</td><td class="n win">1.21&times;</td><td class="n">24.44</td><td class="n best"><strong>24.62</strong></td><td class="n best"><strong>0.2383</strong></td><td class="n">0.2874</td></tr>
@@ -344,10 +345,10 @@
   <table class="restable">
     <thead>
       <tr><th>Scene</th><th class="n">Resolution</th>
-          <th class="n">Prims (ours)</th><th class="n">Prims (FastGS)</th>
-          <th class="n">FPS (ours)</th><th class="n">FPS (FastGS)</th><th class="n">Speed-up</th>
-          <th class="n">PSNR (ours)</th><th class="n">PSNR (FastGS)</th>
-          <th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th></tr>
+          <th class="n">Prims <span class="arw">&darr;</span> (ours)</th><th class="n">Prims <span class="arw">&darr;</span> (FastGS)</th>
+          <th class="n">FPS <span class="arw">&uarr;</span> (ours)</th><th class="n">FPS <span class="arw">&uarr;</span> (FastGS)</th><th class="n">Speed-up <span class="arw">&uarr;</span></th>
+          <th class="n">PSNR <span class="arw">&uarr;</span> (ours)</th><th class="n">PSNR <span class="arw">&uarr;</span> (FastGS)</th>
+          <th class="n">LPIPS <span class="arw">&darr;</span> (ours)</th><th class="n">LPIPS <span class="arw">&darr;</span> (FastGS)</th></tr>
     </thead>
     <tbody>
       <tr><td>truck</td><td class="n">979&times;546</td><td class="n">85,413</td><td class="n">252,868</td><td class="n best"><strong>2315</strong></td><td class="n">1343</td><td class="n win">1.72&times;</td><td class="n">25.60</td><td class="n best"><strong>25.70</strong></td><td class="n best"><strong>0.1170</strong></td><td class="n">0.1775</td></tr>
@@ -360,10 +361,10 @@
   <table class="restable">
     <thead>
       <tr><th>Scene</th><th class="n">Resolution</th>
-          <th class="n">Prims (ours)</th><th class="n">Prims (FastGS)</th>
-          <th class="n">FPS (ours)</th><th class="n">FPS (FastGS)</th><th class="n">Speed-up</th>
-          <th class="n">PSNR (ours)</th><th class="n">PSNR (FastGS)</th>
-          <th class="n">LPIPS (ours)</th><th class="n">LPIPS (FastGS)</th></tr>
+          <th class="n">Prims <span class="arw">&darr;</span> (ours)</th><th class="n">Prims <span class="arw">&darr;</span> (FastGS)</th>
+          <th class="n">FPS <span class="arw">&uarr;</span> (ours)</th><th class="n">FPS <span class="arw">&uarr;</span> (FastGS)</th><th class="n">Speed-up <span class="arw">&uarr;</span></th>
+          <th class="n">PSNR <span class="arw">&uarr;</span> (ours)</th><th class="n">PSNR <span class="arw">&uarr;</span> (FastGS)</th>
+          <th class="n">LPIPS <span class="arw">&darr;</span> (ours)</th><th class="n">LPIPS <span class="arw">&darr;</span> (FastGS)</th></tr>
     </thead>
     <tbody>
       <tr><td>playroom</td><td class="n">1264&times;832</td><td class="n">67,156</td><td class="n">181,430</td><td class="n best"><strong>1801</strong></td><td class="n">1503</td><td class="n win">1.20&times;</td><td class="n">30.39</td><td class="n best"><strong>30.66</strong></td><td class="n best"><strong>0.2082</strong></td><td class="n">0.2654</td></tr>
