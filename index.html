@@ -7,14 +7,14 @@
      EDIT THIS: page title shown in the browser tab / search results
      ============================================================ -->
 <title>Bake It Till You Make It: Ultrafast Spatial Texture-Surfel Splatting</title>
-<meta name="description" content="Ultrafast novel view synthesis by baking a view-independent texture residual: better perceptual quality than FastGS on all 13 scenes of three benchmarks, 1.2-1.7x faster, ~3x fewer primitives.">
+<meta name="description" content="Ultrafast novel view synthesis by baking a view-independent texture residual: fastest method on all three benchmarks (7-9x faster than 3DGS), best LPIPS among methods above 1000 FPS on every benchmark, ~3x fewer primitives than FastGS.">
 
 <!-- Open Graph / social preview. EDIT the og:image URL and og:url. -->
 <meta property="og:title" content="Bake It Till You Make It">
-<meta property="og:description" content="Ultrafast texture-surfel splatting: better LPIPS than FastGS on all 13 scenes across three benchmarks, 1.2-1.7x faster, real-time on a phone.">
+<meta property="og:description" content="Ultrafast texture-surfel splatting: fastest on all three benchmarks (7-9x faster than 3DGS), best LPIPS among methods above 1000 FPS, real-time on a phone.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nilkel.github.io/bitymi/">
-<meta property="og:image" content="https://nilkel.github.io/bitymi/static/images/teaser.png">
+<meta property="og:image" content="https://nilkel.github.io/bitymi/static/images/teaser.jpg">
 
 <style>
   :root{
@@ -123,6 +123,12 @@
   /* raised specificity on purpose: a row- or column-level background rule
      would otherwise out-specify this and silently drop the tint. */
   .arw{color:var(--muted); font-weight:400; font-size:.9em}
+  /* our row in the full-comparison tables: soft accent tint. Declared BEFORE
+     td.best and kept at equal specificity, so the green winner tint still
+     wins (later rule) on cells that are both. */
+  .restable tr.ours td{background:rgba(192,57,43,.07)}
+  @media (prefers-color-scheme:dark){ .restable tr.ours td{background:rgba(232,101,79,.13)} }
+  .fullcmp h4{font-size:1rem; margin:1.4rem 0 .3rem; color:var(--muted)}
   .restable tbody td.best{background:rgba(26,127,55,.10); border-radius:3px}
   @media (prefers-color-scheme:dark){ .restable tbody td.best{background:rgba(74,194,107,.16)} }
   .sumtable{font-size:.95rem; max-width:640px; margin-left:auto; margin-right:auto}
@@ -184,7 +190,7 @@
 
   <!-- =================== TEASER =================== -->
   <figure>
-    <img src="static/images/teaser.png" alt="Teaser: textured surfel novel view synthesis">
+    <img src="static/images/teaser.jpg" alt="Teaser: textured surfel novel view synthesis">
     <figcaption>
       Our textured surfel representation decouples high-frequency texture from view-dependent
       geometry and appearance, enabling low primitive counts and real-time rendering across
@@ -195,7 +201,7 @@
   <!-- =================== STATS =================== EDIT numbers -->
   <div class="stats">
     <div class="stat"><div class="num">13/13</div><div class="lbl">scenes with better LPIPS<br>than FastGS (3 benchmarks)</div></div>
-    <div class="stat"><div class="num">1.2&ndash;1.7&times;</div><div class="lbl">faster than FastGS, the fastest<br>untextured method, at ~3&times; fewer prims</div></div>
+    <div class="stat"><div class="num">7&ndash;9&times;</div><div class="lbl">faster than 3DGS (up to 13&times; per scene)<br>at over 10&times; fewer primitives</div></div>
     <div class="stat"><div class="num">No MLP</div><div class="lbl">pure texture lookups<br>&mdash; real-time on a phone</div></div>
   </div>
 
@@ -292,12 +298,13 @@
   <!-- =================== RESULTS =================== -->
   <h2>Results</h2>
   <p>Rendering throughput and quality on three standard benchmarks, measured on a single
-     RTX&nbsp;5090. All timings use per-frame <code>cuda.Event</code> pairs, cycling through each
-     scene's full held-out test set so both methods are timed on identical images. We compare
-     against <strong>FastGS</strong>, the fastest untextured Gaussian-splatting method: it reaches
-     its speed by optimising the per-primitive cost of a conventional splat, whereas we change what
-     a primitive stores &mdash; moving high-frequency appearance into a baked texture, so far fewer
-     and cheaper primitives are needed.</p>
+     RTX&nbsp;5090. All timings use per-frame <code>cuda.Event</code> pairs (50 warmup + 400 timed
+     frames, sort and preprocess included), cycling through each scene's full held-out test set so
+     all methods are timed on identical images. We first highlight <strong>FastGS</strong>, the
+     strongest fast untextured baseline: it reaches its speed by optimising the per-primitive cost
+     of a conventional splat, whereas we change what a primitive stores &mdash; moving
+     high-frequency appearance into a baked texture, so far fewer and cheaper primitives are
+     needed. The full 13-method comparison follows below.</p>
 
   <div class="tablewrap">
   <table class="restable sumtable">
@@ -305,15 +312,112 @@
       <tr><th>Benchmark</th><th>Method</th><th class="n">Primitives&nbsp;<span class="arw">&darr;</span></th><th class="n">FPS&nbsp;<span class="arw">&uarr;</span></th><th class="n">Speed-up&nbsp;<span class="arw">&uarr;</span></th><th class="n">PSNR&nbsp;<span class="arw">&uarr;</span></th><th class="n">SSIM&nbsp;<span class="arw">&uarr;</span></th><th class="n">LPIPS&nbsp;<span class="arw">&darr;</span></th></tr>
     </thead>
     <tbody>
-      <tr class="dstop"><td rowspan="2">Mip-NeRF&nbsp;360<br><span class="dsn">9 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>123,051</strong></td><td class="n best"><strong>1479</strong></td><td class="n win"><strong>1.22&times;</strong></td><td class="n">27.28</td><td class="n">0.7901</td><td class="n best"><strong>0.2122</strong></td></tr>
-      <tr><td>FastGS</td><td class="n">394,189</td><td class="n">1215</td><td class="n">&mdash;</td><td class="n best"><strong>27.48</strong></td><td class="n best"><strong>0.7973</strong></td><td class="n">0.2603</td></tr>
-      <tr class="dstop"><td rowspan="2">Tanks &amp; Temples<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>86,746</strong></td><td class="n best"><strong>2138</strong></td><td class="n win"><strong>1.72&times;</strong></td><td class="n best"><strong>24.10</strong></td><td class="n best"><strong>0.8509</strong></td><td class="n best"><strong>0.1449</strong></td></tr>
-      <tr><td>FastGS</td><td class="n">242,133</td><td class="n">1245</td><td class="n">&mdash;</td><td class="n">24.02</td><td class="n">0.8409</td><td class="n">0.2102</td></tr>
-      <tr class="dstop"><td rowspan="2">Deep Blending<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>66,622</strong></td><td class="n best"><strong>1946</strong></td><td class="n win"><strong>1.34&times;</strong></td><td class="n">29.98</td><td class="n">0.8919</td><td class="n best"><strong>0.2200</strong></td></tr>
-      <tr><td>FastGS</td><td class="n">216,748</td><td class="n">1452</td><td class="n">&mdash;</td><td class="n best"><strong>30.16</strong></td><td class="n best"><strong>0.9053</strong></td><td class="n">0.2693</td></tr>
+      <tr class="dstop"><td rowspan="2">Mip-NeRF&nbsp;360<br><span class="dsn">9 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>123,051</strong></td><td class="n best"><strong>1538</strong></td><td class="n win"><strong>1.27&times;</strong></td><td class="n">27.23</td><td class="n">0.7892</td><td class="n best"><strong>0.2114</strong></td></tr>
+      <tr><td>FastGS</td><td class="n">394,189</td><td class="n">1209</td><td class="n">&mdash;</td><td class="n best"><strong>27.44</strong></td><td class="n best"><strong>0.7967</strong></td><td class="n">0.2589</td></tr>
+      <tr class="dstop"><td rowspan="2">Tanks &amp; Temples<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>86,746</strong></td><td class="n best"><strong>2217</strong></td><td class="n win"><strong>1.78&times;</strong></td><td class="n best"><strong>24.10</strong></td><td class="n best"><strong>0.8507</strong></td><td class="n best"><strong>0.1447</strong></td></tr>
+      <tr><td>FastGS</td><td class="n">242,133</td><td class="n">1243</td><td class="n">&mdash;</td><td class="n">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td></tr>
+      <tr class="dstop"><td rowspan="2">Deep Blending<br><span class="dsn">2 scenes</span></td><td><strong>Ours</strong></td><td class="n best"><strong>66,622</strong></td><td class="n best"><strong>2014</strong></td><td class="n win"><strong>1.39&times;</strong></td><td class="n">29.87</td><td class="n">0.8902</td><td class="n best"><strong>0.2176</strong></td></tr>
+      <tr><td>FastGS</td><td class="n">216,748</td><td class="n">1451</td><td class="n">&mdash;</td><td class="n best"><strong>30.02</strong></td><td class="n best"><strong>0.9045</strong></td><td class="n">0.2651</td></tr>
     </tbody>
   </table>
   </div>
+
+  <h3>Full comparison: 13 methods, one GPU, one eval script</h3>
+  <p>Every baseline below is retrained and re-benchmarked by us on the same RTX&nbsp;5090, with
+     quality recomputed from the saved renders by one shared evaluation script &mdash; no numbers
+     are copied from other papers. We are the <strong>fastest method on all three
+     benchmarks</strong>; among methods above 1000&nbsp;FPS (Speedy-Splat, FastGS, ours) we have
+     the best LPIPS on every benchmark mean and on 12 of 13 scenes.</p>
+
+  <figure>
+    <img src="static/images/pareto.png" alt="LPIPS versus FPS on Mip-NeRF 360, Tanks and Temples and Deep Blending: our method sits alone at the fast end of the Pareto frontier on all three benchmarks">
+    <figcaption>LPIPS vs FPS (LPIPS decreases upward, so the best corner is top right) for seven
+      representative methods plus primitive-budget variants. On every benchmark the Pareto frontier
+      reduces to a quality anchor (Beta-Splatting or Nexels-400K) and us.</figcaption>
+  </figure>
+
+  <div class="fullcmp">
+  <h4>Mip-NeRF&nbsp;360 <span class="dsn">(9 scenes)</span></h4>
+  <div class="tablewrap">
+  <table class="restable">
+    <thead>
+      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims <span class="arw">&darr;</span></th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>3DGS</td><td class="n">27.54</td><td class="n">0.8190</td><td class="n">0.2149</td><td class="n">2,732,349</td><td class="n">646</td><td class="n">211</td></tr>
+      <tr><td>2DGS</td><td class="n">26.83</td><td class="n">0.7989</td><td class="n">0.2520</td><td class="n">2,128,093</td><td class="n">495</td><td class="n">131</td></tr>
+      <tr><td>Beta-Splatting</td><td class="n best"><strong>28.07</strong></td><td class="n best"><strong>0.8311</strong></td><td class="n best"><strong>0.1904</strong></td><td class="n">3,111,111</td><td class="n">356</td><td class="n">110</td></tr>
+      <tr><td>Beta-Splatting (200K)</td><td class="n">26.66</td><td class="n">0.7725</td><td class="n">0.2942</td><td class="n">205,331</td><td class="n">23</td><td class="n">469</td></tr>
+      <tr><td>BBSplat</td><td class="n">26.80</td><td class="n">0.7874</td><td class="n">0.2355</td><td class="n">237,778</td><td class="n">176</td><td class="n">48</td></tr>
+      <tr><td>Nexels (40K)</td><td class="n">25.99</td><td class="n">0.7619</td><td class="n">0.2411</td><td class="n best"><strong>39,977</strong></td><td class="n">138</td><td class="n">119</td></tr>
+      <tr><td>Nexels (400K)</td><td class="n">27.21</td><td class="n">0.8018</td><td class="n">0.2057</td><td class="n">399,771</td><td class="n">230</td><td class="n">78</td></tr>
+      <tr><td>Speedy-Splat</td><td class="n">26.91</td><td class="n">0.7883</td><td class="n">0.2875</td><td class="n">315,961</td><td class="n">75</td><td class="n">1259</td></tr>
+      <tr><td>FastGS</td><td class="n">27.44</td><td class="n">0.7967</td><td class="n">0.2589</td><td class="n">394,189</td><td class="n">98</td><td class="n">1209</td></tr>
+      <tr><td>Content-Aware Texturing</td><td class="n">26.84</td><td class="n">0.7886</td><td class="n">0.2340</td><td class="n">155,756</td><td class="n">436</td><td class="n">137</td></tr>
+      <tr><td>Textured Gaussians</td><td class="n">25.86</td><td class="n">0.7336</td><td class="n">0.2857</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">28</td></tr>
+      <tr><td>NeST</td><td class="n">26.39</td><td class="n">0.7734</td><td class="n">0.2257</td><td class="n">961,163</td><td class="n">224</td><td class="n">24</td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n">27.23</td><td class="n">0.7892</td><td class="n">0.2114</td><td class="n">123,051</td><td class="n">445</td><td class="n best"><strong>1538</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>Tanks &amp; Temples <span class="dsn">(2 scenes)</span></h4>
+  <div class="tablewrap">
+  <table class="restable">
+    <thead>
+      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims <span class="arw">&darr;</span></th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>3DGS</td><td class="n">23.74</td><td class="n">0.8574</td><td class="n">0.1692</td><td class="n">1,574,592</td><td class="n">372</td><td class="n">259</td></tr>
+      <tr><td>2DGS</td><td class="n">23.15</td><td class="n">0.8367</td><td class="n">0.2118</td><td class="n">851,362</td><td class="n">198</td><td class="n">230</td></tr>
+      <tr><td>Beta-Splatting</td><td class="n best"><strong>24.71</strong></td><td class="n best"><strong>0.8735</strong></td><td class="n best"><strong>0.1434</strong></td><td class="n">1,750,000</td><td class="n">200</td><td class="n">190</td></tr>
+      <tr><td>Beta-Splatting (200K)</td><td class="n">23.38</td><td class="n">0.8348</td><td class="n">0.2144</td><td class="n">200,000</td><td class="n">23</td><td class="n">524</td></tr>
+      <tr><td>BBSplat</td><td class="n">23.70</td><td class="n">0.8570</td><td class="n">0.1501</td><td class="n">300,000</td><td class="n">226</td><td class="n">80</td></tr>
+      <tr><td>Nexels (40K)</td><td class="n">22.25</td><td class="n">0.7942</td><td class="n">0.2113</td><td class="n best"><strong>39,979</strong></td><td class="n">138</td><td class="n">204</td></tr>
+      <tr><td>Nexels (400K)</td><td class="n">23.62</td><td class="n">0.8449</td><td class="n">0.1576</td><td class="n">399,767</td><td class="n">230</td><td class="n">137</td></tr>
+      <tr><td>Speedy-Splat</td><td class="n">23.44</td><td class="n">0.8252</td><td class="n">0.2399</td><td class="n">181,817</td><td class="n">43</td><td class="n">1459</td></tr>
+      <tr><td>FastGS</td><td class="n">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td><td class="n">242,133</td><td class="n">60</td><td class="n">1243</td></tr>
+      <tr><td>Content-Aware Texturing</td><td class="n">23.37</td><td class="n">0.8387</td><td class="n">0.1973</td><td class="n">133,880</td><td class="n">127</td><td class="n">270</td></tr>
+      <tr><td>Textured Gaussians</td><td class="n">22.70</td><td class="n">0.8058</td><td class="n">0.2161</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
+      <tr><td>NeST</td><td class="n">22.54</td><td class="n">0.8178</td><td class="n">0.1866</td><td class="n">378,448</td><td class="n">90</td><td class="n">48</td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n">24.10</td><td class="n">0.8507</td><td class="n">0.1447</td><td class="n">86,746</td><td class="n">325</td><td class="n best"><strong>2217</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h4>Deep Blending <span class="dsn">(2 scenes)</span></h4>
+  <div class="tablewrap">
+  <table class="restable">
+    <thead>
+      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims <span class="arw">&darr;</span></th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
+    </thead>
+    <tbody>
+      <tr><td>3DGS</td><td class="n">29.71</td><td class="n">0.9106</td><td class="n">0.2375</td><td class="n">2,471,124</td><td class="n">584</td><td class="n">216</td></tr>
+      <tr><td>2DGS</td><td class="n">29.47</td><td class="n">0.9071</td><td class="n">0.2566</td><td class="n">1,508,720</td><td class="n">351</td><td class="n">157</td></tr>
+      <tr><td>Beta-Splatting</td><td class="n">29.44</td><td class="n">0.9090</td><td class="n">0.2372</td><td class="n">3,000,000</td><td class="n">343</td><td class="n">136</td></tr>
+      <tr><td>Beta-Splatting (200K)</td><td class="n">29.64</td><td class="n">0.9024</td><td class="n">0.2756</td><td class="n">200,000</td><td class="n">23</td><td class="n">520</td></tr>
+      <tr><td>BBSplat</td><td class="n">29.34</td><td class="n">0.9050</td><td class="n">0.2570</td><td class="n">160,000</td><td class="n">111</td><td class="n">49</td></tr>
+      <tr><td>Nexels (40K)</td><td class="n">29.34</td><td class="n">0.8981</td><td class="n">0.2306</td><td class="n best"><strong>39,958</strong></td><td class="n">138</td><td class="n">106</td></tr>
+      <tr><td>Nexels (400K)</td><td class="n best"><strong>30.41</strong></td><td class="n">0.9138</td><td class="n best"><strong>0.2046</strong></td><td class="n">399,188</td><td class="n">230</td><td class="n">56</td></tr>
+      <tr><td>Speedy-Splat</td><td class="n">29.62</td><td class="n">0.9074</td><td class="n">0.2678</td><td class="n">250,990</td><td class="n">59</td><td class="n">1501</td></tr>
+      <tr><td>FastGS</td><td class="n">30.02</td><td class="n">0.9045</td><td class="n">0.2651</td><td class="n">216,748</td><td class="n">54</td><td class="n">1451</td></tr>
+      <tr><td>Content-Aware Texturing</td><td class="n">29.99</td><td class="n best"><strong>0.9141</strong></td><td class="n">0.2410</td><td class="n">185,094</td><td class="n">252</td><td class="n">147</td></tr>
+      <tr><td>Textured Gaussians</td><td class="n">29.04</td><td class="n">0.8913</td><td class="n">0.2652</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
+      <tr><td>NeST</td><td class="n">28.86</td><td class="n">0.9021</td><td class="n">0.2273</td><td class="n">478,000</td><td class="n">113</td><td class="n">38</td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n">29.87</td><td class="n">0.8902</td><td class="n">0.2176</td><td class="n">66,622</td><td class="n">259</td><td class="n best"><strong>2014</strong></td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <p class="tnote">
+    <em>Size</em> is the payload as each method stores it, so the column mixes compressed and
+    uncompressed formats: our atlas ships BC7-compressed, while Content-Aware Texturing and
+    Textured Gaussians store fp32 textures with no compressed variant in their pipelines.
+    Beta-Splatting (200K) and Nexels (40K) are those papers' own reduced primitive budgets,
+    closest to our primitive count. NeST is run as its released baseline method.
+  </p>
+  </div>
+
   <p class="tcenter"><button class="toggle" type="button" data-target="ps-all"
      aria-expanded="false">Show per-scene results</button></p>
   <div id="ps-all" hidden>
@@ -328,15 +432,15 @@
           <th class="n">LPIPS <span class="arw">&darr;</span> (ours)</th><th class="n">LPIPS <span class="arw">&darr;</span> (FastGS)</th></tr>
     </thead>
     <tbody>
-      <tr><td>bicycle</td><td class="n">1237&times;822</td><td class="n">160,097</td><td class="n">539,624</td><td class="n best"><strong>1461</strong></td><td class="n">1204</td><td class="n win">1.21&times;</td><td class="n">24.44</td><td class="n best"><strong>24.62</strong></td><td class="n best"><strong>0.2383</strong></td><td class="n">0.2874</td></tr>
-      <tr><td>bonsai</td><td class="n">1559&times;1039</td><td class="n">92,281</td><td class="n">275,719</td><td class="n best"><strong>1279</strong></td><td class="n">1241</td><td class="n win">1.03&times;</td><td class="n best"><strong>32.63</strong></td><td class="n">32.12</td><td class="n best"><strong>0.1704</strong></td><td class="n">0.2171</td></tr>
-      <tr><td>counter</td><td class="n">1558&times;1038</td><td class="n">68,394</td><td class="n">208,171</td><td class="n best"><strong>1525</strong></td><td class="n">1207</td><td class="n win">1.26&times;</td><td class="n best"><strong>29.32</strong></td><td class="n">29.08</td><td class="n best"><strong>0.1833</strong></td><td class="n">0.2218</td></tr>
-      <tr><td>flowers</td><td class="n">1256&times;828</td><td class="n">184,511</td><td class="n">489,951</td><td class="n best"><strong>1260</strong></td><td class="n">1173</td><td class="n win">1.07&times;</td><td class="n">20.78</td><td class="n best"><strong>21.31</strong></td><td class="n best"><strong>0.3200</strong></td><td class="n">0.3887</td></tr>
-      <tr><td>garden</td><td class="n">1297&times;840</td><td class="n">148,658</td><td class="n">660,711</td><td class="n best"><strong>1894</strong></td><td class="n">1145</td><td class="n win">1.65&times;</td><td class="n">27.03</td><td class="n best"><strong>27.32</strong></td><td class="n best"><strong>0.1288</strong></td><td class="n">0.1577</td></tr>
-      <tr><td>kitchen</td><td class="n">1558&times;1039</td><td class="n">119,462</td><td class="n">379,671</td><td class="n best"><strong>1328</strong></td><td class="n">1059</td><td class="n win">1.25&times;</td><td class="n">31.47</td><td class="n best"><strong>31.74</strong></td><td class="n best"><strong>0.1233</strong></td><td class="n">0.1388</td></tr>
-      <tr><td>room</td><td class="n">1557&times;1038</td><td class="n">62,947</td><td class="n">207,167</td><td class="n best"><strong>1900</strong></td><td class="n">1343</td><td class="n win">1.41&times;</td><td class="n">31.56</td><td class="n best"><strong>31.74</strong></td><td class="n best"><strong>0.1891</strong></td><td class="n">0.2436</td></tr>
-      <tr><td>stump</td><td class="n">1245&times;825</td><td class="n">96,365</td><td class="n">392,348</td><td class="n best"><strong>1397</strong></td><td class="n">1276</td><td class="n win">1.10&times;</td><td class="n">25.76</td><td class="n best"><strong>26.54</strong></td><td class="n best"><strong>0.2632</strong></td><td class="n">0.2726</td></tr>
-      <tr><td>treehill</td><td class="n">1267&times;832</td><td class="n">174,744</td><td class="n">394,335</td><td class="n">1271</td><td class="n best"><strong>1286</strong></td><td class="n loss">0.99&times;</td><td class="n">22.56</td><td class="n best"><strong>22.85</strong></td><td class="n best"><strong>0.2937</strong></td><td class="n">0.4146</td></tr>
+      <tr><td>bicycle</td><td class="n">1237&times;822</td><td class="n">160,097</td><td class="n">539,624</td><td class="n best"><strong>1520</strong></td><td class="n">1212</td><td class="n win">1.25&times;</td><td class="n">24.41</td><td class="n best"><strong>24.61</strong></td><td class="n best"><strong>0.2383</strong></td><td class="n">0.2870</td></tr>
+      <tr><td>bonsai</td><td class="n">1559&times;1039</td><td class="n">92,281</td><td class="n">275,719</td><td class="n best"><strong>1330</strong></td><td class="n">1229</td><td class="n win">1.08&times;</td><td class="n best"><strong>32.53</strong></td><td class="n">32.05</td><td class="n best"><strong>0.1669</strong></td><td class="n">0.2138</td></tr>
+      <tr><td>counter</td><td class="n">1558&times;1038</td><td class="n">68,394</td><td class="n">208,171</td><td class="n best"><strong>1594</strong></td><td class="n">1199</td><td class="n win">1.33&times;</td><td class="n best"><strong>29.29</strong></td><td class="n">29.06</td><td class="n best"><strong>0.1819</strong></td><td class="n">0.2199</td></tr>
+      <tr><td>flowers</td><td class="n">1256&times;828</td><td class="n">184,511</td><td class="n">489,951</td><td class="n best"><strong>1301</strong></td><td class="n">1166</td><td class="n win">1.12&times;</td><td class="n">20.78</td><td class="n best"><strong>21.29</strong></td><td class="n best"><strong>0.3202</strong></td><td class="n">0.3880</td></tr>
+      <tr><td>garden</td><td class="n">1297&times;840</td><td class="n">148,658</td><td class="n">660,711</td><td class="n best"><strong>1954</strong></td><td class="n">1146</td><td class="n win">1.71&times;</td><td class="n">27.02</td><td class="n best"><strong>27.32</strong></td><td class="n best"><strong>0.1288</strong></td><td class="n">0.1574</td></tr>
+      <tr><td>kitchen</td><td class="n">1558&times;1039</td><td class="n">119,462</td><td class="n">379,671</td><td class="n best"><strong>1384</strong></td><td class="n">1055</td><td class="n win">1.31&times;</td><td class="n">31.39</td><td class="n best"><strong>31.64</strong></td><td class="n best"><strong>0.1224</strong></td><td class="n">0.1375</td></tr>
+      <tr><td>room</td><td class="n">1557&times;1038</td><td class="n">62,947</td><td class="n">207,167</td><td class="n best"><strong>2007</strong></td><td class="n">1341</td><td class="n win">1.50&times;</td><td class="n">31.48</td><td class="n best"><strong>31.70</strong></td><td class="n best"><strong>0.1866</strong></td><td class="n">0.2405</td></tr>
+      <tr><td>stump</td><td class="n">1245&times;825</td><td class="n">96,365</td><td class="n">392,348</td><td class="n best"><strong>1433</strong></td><td class="n">1263</td><td class="n win">1.14&times;</td><td class="n">25.66</td><td class="n best"><strong>26.47</strong></td><td class="n best"><strong>0.2632</strong></td><td class="n">0.2721</td></tr>
+      <tr><td>treehill</td><td class="n">1267&times;832</td><td class="n">174,744</td><td class="n">394,335</td><td class="n best"><strong>1320</strong></td><td class="n">1267</td><td class="n win">1.04&times;</td><td class="n">22.55</td><td class="n best"><strong>22.83</strong></td><td class="n best"><strong>0.2939</strong></td><td class="n">0.4141</td></tr>
     </tbody>
   </table>
   </div>
@@ -351,8 +455,8 @@
           <th class="n">LPIPS <span class="arw">&darr;</span> (ours)</th><th class="n">LPIPS <span class="arw">&darr;</span> (FastGS)</th></tr>
     </thead>
     <tbody>
-      <tr><td>truck</td><td class="n">979&times;546</td><td class="n">85,413</td><td class="n">252,868</td><td class="n best"><strong>2315</strong></td><td class="n">1343</td><td class="n win">1.72&times;</td><td class="n">25.60</td><td class="n best"><strong>25.70</strong></td><td class="n best"><strong>0.1170</strong></td><td class="n">0.1775</td></tr>
-      <tr><td>train</td><td class="n">980&times;545</td><td class="n">88,080</td><td class="n">231,398</td><td class="n best"><strong>1961</strong></td><td class="n">1147</td><td class="n win">1.71&times;</td><td class="n best"><strong>22.61</strong></td><td class="n">22.33</td><td class="n best"><strong>0.1728</strong></td><td class="n">0.2429</td></tr>
+      <tr><td>truck</td><td class="n">979&times;546</td><td class="n">85,413</td><td class="n">252,868</td><td class="n best"><strong>2399</strong></td><td class="n">1348</td><td class="n win">1.78&times;</td><td class="n">25.61</td><td class="n best"><strong>25.70</strong></td><td class="n best"><strong>0.1169</strong></td><td class="n">0.1766</td></tr>
+      <tr><td>train</td><td class="n">980&times;545</td><td class="n">88,080</td><td class="n">231,398</td><td class="n best"><strong>2035</strong></td><td class="n">1139</td><td class="n win">1.79&times;</td><td class="n best"><strong>22.59</strong></td><td class="n">22.31</td><td class="n best"><strong>0.1724</strong></td><td class="n">0.2419</td></tr>
     </tbody>
   </table>
   </div>
@@ -367,19 +471,19 @@
           <th class="n">LPIPS <span class="arw">&darr;</span> (ours)</th><th class="n">LPIPS <span class="arw">&darr;</span> (FastGS)</th></tr>
     </thead>
     <tbody>
-      <tr><td>playroom</td><td class="n">1264&times;832</td><td class="n">67,156</td><td class="n">181,430</td><td class="n best"><strong>1801</strong></td><td class="n">1503</td><td class="n win">1.20&times;</td><td class="n">30.39</td><td class="n best"><strong>30.66</strong></td><td class="n best"><strong>0.2082</strong></td><td class="n">0.2654</td></tr>
-      <tr><td>drjohnson</td><td class="n">1332&times;876</td><td class="n">66,087</td><td class="n">252,067</td><td class="n best"><strong>2090</strong></td><td class="n">1401</td><td class="n win">1.49&times;</td><td class="n">29.57</td><td class="n best"><strong>29.65</strong></td><td class="n best"><strong>0.2317</strong></td><td class="n">0.2732</td></tr>
+      <tr><td>playroom</td><td class="n">1264&times;832</td><td class="n">67,156</td><td class="n">181,430</td><td class="n best"><strong>1853</strong></td><td class="n">1498</td><td class="n win">1.24&times;</td><td class="n">30.24</td><td class="n best"><strong>30.44</strong></td><td class="n best"><strong>0.2051</strong></td><td class="n">0.2605</td></tr>
+      <tr><td>drjohnson</td><td class="n">1332&times;876</td><td class="n">66,087</td><td class="n">252,067</td><td class="n best"><strong>2175</strong></td><td class="n">1403</td><td class="n win">1.55&times;</td><td class="n">29.50</td><td class="n best"><strong>29.59</strong></td><td class="n best"><strong>0.2302</strong></td><td class="n">0.2697</td></tr>
     </tbody>
   </table>
   </div>
   </div>
 
   <p class="tnote">
-    Our method carries <strong>~3&times; fewer primitives</strong> on every benchmark and is
-    <strong>13&times;</strong> faster than the neural renderer it replaces (the same model before
-    baking, which evaluates a hash-grid and MLP per fragment). FastGS holds a small PSNR edge on
-    Mip-NeRF&nbsp;360 (&minus;0.20&nbsp;dB) and Deep Blending (&minus;0.18&nbsp;dB) and we lead on
-    Tanks&nbsp;&amp;&nbsp;Temples (+0.09&nbsp;dB), while <strong>LPIPS favours us on all 13
+    Our method carries <strong>~3&times; fewer primitives</strong> than FastGS on every benchmark
+    (over 10&times; fewer than 3DGS) and is <strong>7&ndash;9&times; faster than 3DGS</strong> on
+    the benchmark means, up to 13&times; on garden. FastGS holds a small PSNR edge on
+    Mip-NeRF&nbsp;360 (&minus;0.21&nbsp;dB) and Deep Blending (&minus;0.15&nbsp;dB) and we lead on
+    Tanks&nbsp;&amp;&nbsp;Temples (+0.10&nbsp;dB), while <strong>LPIPS favours us on all 13
     scenes</strong> &mdash; the explicit texture holds high-frequency detail that a per-primitive
     colour model cannot.
   </p>
