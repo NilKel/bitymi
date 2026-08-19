@@ -148,6 +148,10 @@
   .sumtable td:first-child,.sumtable th:first-child{font-weight:600}
   .perscene{margin-top:.4rem}
   .sumtable tr.dstop td{border-top:2px solid var(--line)}
+  /* small gap between dataset groups: a background-coloured border reads as
+     whitespace (border-collapse picks the wider border, replacing the line).
+     :not(:first-child) keeps the header's underline on the first group. */
+  .sumtable tbody tr.dstop:not(:first-child) td{border-top:10px solid var(--bg)}
   .sumtable td[rowspan]{vertical-align:middle; font-weight:600}
   .dsn{font-weight:400; font-size:.78rem; color:var(--muted)}
   #ps-all h4{font-size:1rem; margin:1.4rem 0 .3rem; color:var(--muted)}
