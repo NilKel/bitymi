@@ -327,18 +327,18 @@
   <div class="tablewrap">
   <table class="restable sumtable">
     <thead>
-      <tr><th>Benchmark</th><th>Method</th><th class="n">Primitives&nbsp;<span class="arw">&darr;</span></th><th class="n">FPS&nbsp;<span class="arw">&uarr;</span></th><th class="n">Our speed-up&nbsp;<span class="arw">&uarr;</span></th><th class="n">PSNR&nbsp;<span class="arw">&uarr;</span></th><th class="n">SSIM&nbsp;<span class="arw">&uarr;</span></th><th class="n">LPIPS&nbsp;<span class="arw">&darr;</span></th></tr>
+      <tr><th>Benchmark</th><th>Method</th><th class="n">Primitives</th><th class="n">FPS&nbsp;<span class="arw">&uarr;</span></th><th class="n">Our speed-up&nbsp;<span class="arw">&uarr;</span></th><th class="n">PSNR&nbsp;<span class="arw">&uarr;</span></th><th class="n">SSIM&nbsp;<span class="arw">&uarr;</span></th><th class="n">LPIPS&nbsp;<span class="arw">&darr;</span></th></tr>
     </thead>
     <tbody>
       <tr class="dstop"><td rowspan="3">Mip-NeRF&nbsp;360<br><span class="dsn">9 scenes</span></td><td>FastGS</td><td class="n">394,189</td><td class="n">1209</td><td class="n win">1.27&times;</td><td class="n best"><strong>27.44</strong></td><td class="n best"><strong>0.7967</strong></td><td class="n">0.2589</td></tr>
-      <tr><td>Nexels (100K)</td><td class="n best"><strong>99,934</strong></td><td class="n">100</td><td class="n win">15.4&times;</td><td class="n">26.55</td><td class="n">0.7764</td><td class="n">0.2245</td></tr>
+      <tr><td>Nexels (100K)</td><td class="n">99,934</td><td class="n">100</td><td class="n win">15.4&times;</td><td class="n">26.55</td><td class="n">0.7764</td><td class="n">0.2245</td></tr>
       <tr class="oursep"><td><strong>Ours</strong></td><td class="n">123,051</td><td class="n best"><strong>1538</strong></td><td class="n">&mdash;</td><td class="n">27.23</td><td class="n">0.7892</td><td class="n best"><strong>0.2114</strong></td></tr>
       <tr class="dstop"><td rowspan="3">Tanks &amp; Temples<br><span class="dsn">2 scenes</span></td><td>FastGS</td><td class="n">242,133</td><td class="n">1243</td><td class="n win">1.78&times;</td><td class="n">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td></tr>
       <tr><td>Nexels (100K)</td><td class="n">99,932</td><td class="n">181</td><td class="n win">12.3&times;</td><td class="n">22.92</td><td class="n">0.8244</td><td class="n">0.1752</td></tr>
-      <tr class="oursep"><td><strong>Ours</strong></td><td class="n best"><strong>86,746</strong></td><td class="n best"><strong>2217</strong></td><td class="n">&mdash;</td><td class="n best"><strong>24.10</strong></td><td class="n best"><strong>0.8507</strong></td><td class="n best"><strong>0.1447</strong></td></tr>
+      <tr class="oursep"><td><strong>Ours</strong></td><td class="n">86,746</td><td class="n best"><strong>2217</strong></td><td class="n">&mdash;</td><td class="n best"><strong>24.10</strong></td><td class="n best"><strong>0.8507</strong></td><td class="n best"><strong>0.1447</strong></td></tr>
       <tr class="dstop"><td rowspan="3">Deep Blending<br><span class="dsn">2 scenes</span></td><td>FastGS</td><td class="n">216,748</td><td class="n">1451</td><td class="n win">1.39&times;</td><td class="n best"><strong>30.02</strong></td><td class="n">0.9045</td><td class="n">0.2651</td></tr>
       <tr><td>Nexels (100K)</td><td class="n">99,843</td><td class="n">86</td><td class="n win">23.4&times;</td><td class="n">30.00</td><td class="n best"><strong>0.9075</strong></td><td class="n best"><strong>0.2097</strong></td></tr>
-      <tr class="oursep"><td><strong>Ours</strong></td><td class="n best"><strong>66,622</strong></td><td class="n best"><strong>2014</strong></td><td class="n">&mdash;</td><td class="n">29.87</td><td class="n">0.8902</td><td class="n">0.2176</td></tr>
+      <tr class="oursep"><td><strong>Ours</strong></td><td class="n">66,622</td><td class="n best"><strong>2014</strong></td><td class="n">&mdash;</td><td class="n">29.87</td><td class="n">0.8902</td><td class="n">0.2176</td></tr>
     </tbody>
   </table>
   </div>
@@ -349,8 +349,8 @@
      are copied from other papers. We are the <strong>fastest method on all three
      benchmarks</strong>; among methods above 1000&nbsp;FPS (Speedy-Splat, FastGS, ours) we have
      the best LPIPS on every benchmark mean and on 12 of 13 scenes. Red, orange and yellow tints
-     mark the best, second and third value in each ranked column (Size is unranked; see the note
-     below).</p>
+     mark the best, second and third value in each quality and speed column (Primitives and Size
+     are context, not ranked; see the note below).</p>
 
   <figure>
     <img src="static/images/pareto.png" alt="LPIPS versus FPS on Mip-NeRF 360, Tanks and Temples and Deep Blending: our method sits alone at the fast end of the Pareto frontier on all three benchmarks">
@@ -364,7 +364,7 @@
   <div class="tablewrap">
   <table class="restable">
     <thead>
-      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims <span class="arw">&darr;</span></th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
+      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
     </thead>
     <tbody>
       <tr><td>3DGS</td><td class="n r2">27.54</td><td class="n r2">0.8190</td><td class="n">0.2149</td><td class="n">2,732,349</td><td class="n">646</td><td class="n">211</td></tr>
@@ -372,14 +372,14 @@
       <tr><td>Beta-Splatting</td><td class="n r1"><strong>28.07</strong></td><td class="n r1"><strong>0.8311</strong></td><td class="n r1"><strong>0.1904</strong></td><td class="n">3,111,111</td><td class="n">356</td><td class="n">110</td></tr>
       <tr><td>Beta-Splatting (200K)</td><td class="n">26.66</td><td class="n">0.7725</td><td class="n">0.2942</td><td class="n">205,331</td><td class="n">23</td><td class="n">469</td></tr>
       <tr><td>BBSplat</td><td class="n">26.80</td><td class="n">0.7874</td><td class="n">0.2355</td><td class="n">237,778</td><td class="n">176</td><td class="n">48</td></tr>
-      <tr><td>Nexels (40K)</td><td class="n">25.99</td><td class="n">0.7619</td><td class="n">0.2411</td><td class="n r1"><strong>39,977</strong></td><td class="n">138</td><td class="n">119</td></tr>
+      <tr><td>Nexels (40K)</td><td class="n">25.99</td><td class="n">0.7619</td><td class="n">0.2411</td><td class="n">39,977</td><td class="n">138</td><td class="n">119</td></tr>
       <tr><td>Nexels (400K)</td><td class="n">27.21</td><td class="n r3">0.8018</td><td class="n r2">0.2057</td><td class="n">399,771</td><td class="n">230</td><td class="n">78</td></tr>
       <tr><td>Speedy-Splat</td><td class="n">26.91</td><td class="n">0.7883</td><td class="n">0.2875</td><td class="n">315,961</td><td class="n">75</td><td class="n r2">1259</td></tr>
       <tr><td>FastGS</td><td class="n r3">27.44</td><td class="n">0.7967</td><td class="n">0.2589</td><td class="n">394,189</td><td class="n">98</td><td class="n r3">1209</td></tr>
       <tr><td>Content-Aware Texturing</td><td class="n">26.84</td><td class="n">0.7886</td><td class="n">0.2340</td><td class="n">155,756</td><td class="n">436</td><td class="n">137</td></tr>
-      <tr><td>Textured Gaussians</td><td class="n">25.86</td><td class="n">0.7336</td><td class="n">0.2857</td><td class="n r2">100,000</td><td class="n">3,837</td><td class="n">28</td></tr>
+      <tr><td>Textured Gaussians</td><td class="n">25.86</td><td class="n">0.7336</td><td class="n">0.2857</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">28</td></tr>
       <tr><td>NeST</td><td class="n">26.39</td><td class="n">0.7734</td><td class="n">0.2257</td><td class="n">961,163</td><td class="n">224</td><td class="n">24</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n">27.23</td><td class="n">0.7892</td><td class="n r3">0.2114</td><td class="n r3">123,051</td><td class="n">445</td><td class="n r1"><strong>1538</strong></td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n">27.23</td><td class="n">0.7892</td><td class="n r3">0.2114</td><td class="n">123,051</td><td class="n">445</td><td class="n r1"><strong>1538</strong></td></tr>
     </tbody>
   </table>
   </div>
@@ -388,7 +388,7 @@
   <div class="tablewrap">
   <table class="restable">
     <thead>
-      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims <span class="arw">&darr;</span></th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
+      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
     </thead>
     <tbody>
       <tr><td>3DGS</td><td class="n">23.74</td><td class="n r2">0.8574</td><td class="n">0.1692</td><td class="n">1,574,592</td><td class="n">372</td><td class="n">259</td></tr>
@@ -396,14 +396,14 @@
       <tr><td>Beta-Splatting</td><td class="n r1"><strong>24.71</strong></td><td class="n r1"><strong>0.8735</strong></td><td class="n r1"><strong>0.1434</strong></td><td class="n">1,750,000</td><td class="n">200</td><td class="n">190</td></tr>
       <tr><td>Beta-Splatting (200K)</td><td class="n">23.38</td><td class="n">0.8348</td><td class="n">0.2144</td><td class="n">200,000</td><td class="n">23</td><td class="n">524</td></tr>
       <tr><td>BBSplat</td><td class="n">23.70</td><td class="n r3">0.8570</td><td class="n r3">0.1501</td><td class="n">300,000</td><td class="n">226</td><td class="n">80</td></tr>
-      <tr><td>Nexels (40K)</td><td class="n">22.25</td><td class="n">0.7942</td><td class="n">0.2113</td><td class="n r1"><strong>39,979</strong></td><td class="n">138</td><td class="n">204</td></tr>
+      <tr><td>Nexels (40K)</td><td class="n">22.25</td><td class="n">0.7942</td><td class="n">0.2113</td><td class="n">39,979</td><td class="n">138</td><td class="n">204</td></tr>
       <tr><td>Nexels (400K)</td><td class="n">23.62</td><td class="n">0.8449</td><td class="n">0.1576</td><td class="n">399,767</td><td class="n">230</td><td class="n">137</td></tr>
       <tr><td>Speedy-Splat</td><td class="n">23.44</td><td class="n">0.8252</td><td class="n">0.2399</td><td class="n">181,817</td><td class="n">43</td><td class="n r2">1459</td></tr>
       <tr><td>FastGS</td><td class="n r3">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td><td class="n">242,133</td><td class="n">60</td><td class="n r3">1243</td></tr>
       <tr><td>Content-Aware Texturing</td><td class="n">23.37</td><td class="n">0.8387</td><td class="n">0.1973</td><td class="n">133,880</td><td class="n">127</td><td class="n">270</td></tr>
-      <tr><td>Textured Gaussians</td><td class="n">22.70</td><td class="n">0.8058</td><td class="n">0.2161</td><td class="n r3">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
+      <tr><td>Textured Gaussians</td><td class="n">22.70</td><td class="n">0.8058</td><td class="n">0.2161</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
       <tr><td>NeST</td><td class="n">22.54</td><td class="n">0.8178</td><td class="n">0.1866</td><td class="n">378,448</td><td class="n">90</td><td class="n">48</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n r2">24.10</td><td class="n">0.8507</td><td class="n r2">0.1447</td><td class="n r2">86,746</td><td class="n">325</td><td class="n r1"><strong>2217</strong></td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n r2">24.10</td><td class="n">0.8507</td><td class="n r2">0.1447</td><td class="n">86,746</td><td class="n">325</td><td class="n r1"><strong>2217</strong></td></tr>
     </tbody>
   </table>
   </div>
@@ -412,7 +412,7 @@
   <div class="tablewrap">
   <table class="restable">
     <thead>
-      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims <span class="arw">&darr;</span></th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
+      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
     </thead>
     <tbody>
       <tr><td>3DGS</td><td class="n">29.71</td><td class="n r3">0.9106</td><td class="n">0.2375</td><td class="n">2,471,124</td><td class="n">584</td><td class="n">216</td></tr>
@@ -420,14 +420,14 @@
       <tr><td>Beta-Splatting</td><td class="n">29.44</td><td class="n">0.9090</td><td class="n">0.2372</td><td class="n">3,000,000</td><td class="n">343</td><td class="n">136</td></tr>
       <tr><td>Beta-Splatting (200K)</td><td class="n">29.64</td><td class="n">0.9024</td><td class="n">0.2756</td><td class="n">200,000</td><td class="n">23</td><td class="n">520</td></tr>
       <tr><td>BBSplat</td><td class="n">29.34</td><td class="n">0.9050</td><td class="n">0.2570</td><td class="n">160,000</td><td class="n">111</td><td class="n">49</td></tr>
-      <tr><td>Nexels (40K)</td><td class="n">29.34</td><td class="n">0.8981</td><td class="n">0.2306</td><td class="n r1"><strong>39,958</strong></td><td class="n">138</td><td class="n">106</td></tr>
+      <tr><td>Nexels (40K)</td><td class="n">29.34</td><td class="n">0.8981</td><td class="n">0.2306</td><td class="n">39,958</td><td class="n">138</td><td class="n">106</td></tr>
       <tr><td>Nexels (400K)</td><td class="n r1"><strong>30.41</strong></td><td class="n r2">0.9138</td><td class="n r1"><strong>0.2046</strong></td><td class="n">399,188</td><td class="n">230</td><td class="n">56</td></tr>
       <tr><td>Speedy-Splat</td><td class="n">29.62</td><td class="n">0.9074</td><td class="n">0.2678</td><td class="n">250,990</td><td class="n">59</td><td class="n r2">1501</td></tr>
       <tr><td>FastGS</td><td class="n r2">30.02</td><td class="n">0.9045</td><td class="n">0.2651</td><td class="n">216,748</td><td class="n">54</td><td class="n r3">1451</td></tr>
       <tr><td>Content-Aware Texturing</td><td class="n r3">29.99</td><td class="n r1"><strong>0.9141</strong></td><td class="n">0.2410</td><td class="n">185,094</td><td class="n">252</td><td class="n">147</td></tr>
-      <tr><td>Textured Gaussians</td><td class="n">29.04</td><td class="n">0.8913</td><td class="n">0.2652</td><td class="n r3">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
+      <tr><td>Textured Gaussians</td><td class="n">29.04</td><td class="n">0.8913</td><td class="n">0.2652</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
       <tr><td>NeST</td><td class="n">28.86</td><td class="n">0.9021</td><td class="n r3">0.2273</td><td class="n">478,000</td><td class="n">113</td><td class="n">38</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n">29.87</td><td class="n">0.8902</td><td class="n r2">0.2176</td><td class="n r2">66,622</td><td class="n">259</td><td class="n r1"><strong>2014</strong></td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n">29.87</td><td class="n">0.8902</td><td class="n r2">0.2176</td><td class="n">66,622</td><td class="n">259</td><td class="n r1"><strong>2014</strong></td></tr>
     </tbody>
   </table>
   </div>
