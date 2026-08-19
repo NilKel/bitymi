@@ -131,6 +131,9 @@
   /* demarcation line separating Ours from the baselines above it:
      full-contrast ink (black in light mode, white in dark) */
   .restable tr.ours td, .restable tr.oursep td{border-top:2px solid var(--fg)}
+  /* two stacked ours rows (HQ variant + main): only the first carries the
+     heavy separator; between them a normal hairline */
+  .restable tr.ours + tr.ours td{border-top:1px solid var(--line)}
   .fullcmp h4{font-size:1rem; margin:1.4rem 0 .3rem; color:var(--muted)}
   .restable tbody td.best{background:rgba(26,127,55,.10); border-radius:3px}
   @media (prefers-color-scheme:dark){ .restable tbody td.best{background:rgba(74,194,107,.16)} }
@@ -322,7 +325,7 @@
      per-primitive cost of a conventional splat, and <strong>Nexels (100K)</strong>, the
      strongest textured baseline near our primitive budget. We instead change what a primitive
      stores &mdash; moving high-frequency appearance into a baked texture, so far fewer and
-     cheaper primitives are needed. The full 13-method comparison follows below.</p>
+     cheaper primitives are needed. The full comparison follows below.</p>
 
   <div class="tablewrap">
   <table class="restable sumtable">
@@ -343,7 +346,7 @@
   </table>
   </div>
 
-  <h3>Full comparison: 13 methods, one GPU, one eval script</h3>
+  <h3>Full comparison: one GPU, one eval script</h3>
   <p>Every baseline below is retrained and re-benchmarked by us on the same RTX&nbsp;5090, with
      quality recomputed from the saved renders by one shared evaluation script &mdash; no numbers
      are copied from other papers. We are the <strong>fastest method on all three
@@ -356,7 +359,8 @@
     <img src="static/images/pareto.png" alt="LPIPS versus FPS on Mip-NeRF 360, Tanks and Temples and Deep Blending: our method sits alone at the fast end of the Pareto frontier on all three benchmarks">
     <figcaption>LPIPS vs FPS (LPIPS decreases upward, so the best corner is top right) for seven
       representative methods plus primitive-budget variants. On every benchmark the Pareto frontier
-      reduces to a quality anchor (Beta-Splatting or Nexels-400K) and us.</figcaption>
+      reduces to a quality anchor (Beta-Splatting or Nexels-400K) and us; on Mip-NeRF&nbsp;360 our
+      Gaussian-kernel HQ variant adds a third frontier point.</figcaption>
   </figure>
 
   <div class="fullcmp">
@@ -367,19 +371,20 @@
       <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
     </thead>
     <tbody>
-      <tr><td>3DGS</td><td class="n r2">27.54</td><td class="n r2">0.8190</td><td class="n">0.2149</td><td class="n">2,732,349</td><td class="n">646</td><td class="n">211</td></tr>
+      <tr><td>3DGS</td><td class="n r3">27.54</td><td class="n r2">0.8190</td><td class="n">0.2149</td><td class="n">2,732,349</td><td class="n">646</td><td class="n">211</td></tr>
       <tr><td>2DGS</td><td class="n">26.83</td><td class="n">0.7989</td><td class="n">0.2520</td><td class="n">2,128,093</td><td class="n">495</td><td class="n">131</td></tr>
       <tr><td>Beta-Splatting</td><td class="n r1"><strong>28.07</strong></td><td class="n r1"><strong>0.8311</strong></td><td class="n r1"><strong>0.1904</strong></td><td class="n">3,111,111</td><td class="n">356</td><td class="n">110</td></tr>
       <tr><td>Beta-Splatting (200K)</td><td class="n">26.66</td><td class="n">0.7725</td><td class="n">0.2942</td><td class="n">205,331</td><td class="n">23</td><td class="n">469</td></tr>
       <tr><td>BBSplat</td><td class="n">26.80</td><td class="n">0.7874</td><td class="n">0.2355</td><td class="n">237,778</td><td class="n">176</td><td class="n">48</td></tr>
       <tr><td>Nexels (40K)</td><td class="n">25.99</td><td class="n">0.7619</td><td class="n">0.2411</td><td class="n">39,977</td><td class="n">138</td><td class="n">119</td></tr>
-      <tr><td>Nexels (400K)</td><td class="n">27.21</td><td class="n r3">0.8018</td><td class="n r2">0.2057</td><td class="n">399,771</td><td class="n">230</td><td class="n">78</td></tr>
+      <tr><td>Nexels (400K)</td><td class="n">27.21</td><td class="n">0.8018</td><td class="n r3">0.2057</td><td class="n">399,771</td><td class="n">230</td><td class="n">78</td></tr>
       <tr><td>Speedy-Splat</td><td class="n">26.91</td><td class="n">0.7883</td><td class="n">0.2875</td><td class="n">315,961</td><td class="n">75</td><td class="n r2">1259</td></tr>
-      <tr><td>FastGS</td><td class="n r3">27.44</td><td class="n">0.7967</td><td class="n">0.2589</td><td class="n">394,189</td><td class="n">98</td><td class="n r3">1209</td></tr>
+      <tr><td>FastGS</td><td class="n">27.44</td><td class="n">0.7967</td><td class="n">0.2589</td><td class="n">394,189</td><td class="n">98</td><td class="n r3">1209</td></tr>
       <tr><td>Content-Aware Texturing</td><td class="n">26.84</td><td class="n">0.7886</td><td class="n">0.2340</td><td class="n">155,756</td><td class="n">436</td><td class="n">137</td></tr>
       <tr><td>Textured Gaussians</td><td class="n">25.86</td><td class="n">0.7336</td><td class="n">0.2857</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">28</td></tr>
       <tr><td>NeST</td><td class="n">26.39</td><td class="n">0.7734</td><td class="n">0.2257</td><td class="n">961,163</td><td class="n">224</td><td class="n">24</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n">27.23</td><td class="n">0.7892</td><td class="n r3">0.2114</td><td class="n">123,051</td><td class="n">445</td><td class="n r1"><strong>1538</strong></td></tr>
+      <tr class="ours"><td>Ours (HQ)</td><td class="n r2">27.88</td><td class="n r3">0.8070</td><td class="n r2">0.1981</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="n">705</td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n">27.23</td><td class="n">0.7892</td><td class="n">0.2114</td><td class="n">123,051</td><td class="n">445</td><td class="n r1"><strong>1538</strong></td></tr>
     </tbody>
   </table>
   </div>
@@ -438,6 +443,11 @@
     Textured Gaussians store fp32 textures with no compressed variant in their pipelines.
     Beta-Splatting (200K) and Nexels (40K) are those papers' own reduced primitive budgets,
     closest to our primitive count. NeST is run as its released baseline method.
+    <em>Ours (HQ)</em> swaps the Beta kernel for a Gaussian kernel in our highest-quality
+    configuration (Mip-NeRF&nbsp;360 only): +0.60&nbsp;dB and &minus;0.014 LPIPS over our Beta
+    model at 0.46&times; the frame rate. Its quality is from our training-pipeline evaluation
+    (within 0.05&nbsp;dB / 0.001 LPIPS of the shared script on our method), its FPS is derived
+    from per-scene speed ratios, and its primitive count and size were not recorded.
   </p>
   </div>
 
