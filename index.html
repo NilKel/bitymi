@@ -582,14 +582,18 @@
 
 
 <script>
-  // Per-scene rows are collapsed by default; the mean row is always visible.
+  // Collapsible sections (per-scene tables, dense plot). Each button keeps its
+  // own wording: the markup carries the "Show ..." label, and "Hide" is swapped
+  // in for the open state, so one handler serves any number of toggles.
   document.querySelectorAll('.toggle').forEach(function (b) {
+    var showText = b.textContent.trim();
+    var hideText = showText.replace(/^Show\b/, 'Hide');
     b.addEventListener('click', function () {
       var t = document.getElementById(b.dataset.target);
       var open = t.hasAttribute('hidden');
       if (open) { t.removeAttribute('hidden'); } else { t.setAttribute('hidden', ''); }
       b.setAttribute('aria-expanded', String(open));
-      b.textContent = open ? 'Hide our per-scene results' : 'Show our per-scene results';
+      b.textContent = open ? hideText : showText;
     });
   });
 </script>
