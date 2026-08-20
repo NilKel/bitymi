@@ -369,10 +369,17 @@
      aria-expanded="false">Show every method in the plot</button></p>
   <div id="pareto-all" hidden>
   <figure>
-    <img src="static/images/pareto_all.png" alt="LPIPS versus FPS with all eleven evaluated methods and their budget and quality variants on the three benchmarks">
-    <figcaption>The same plot with every configuration from the table below: eleven methods plus
-      five variants per benchmark (log FPS axis). Hollow markers are variants of the filled marker
-      they connect to.</figcaption>
+    <img src="static/images/pareto_all_linear.png" alt="LPIPS versus FPS on a linear frame-rate axis with all eleven evaluated methods, showing most methods compressed against the left edge">
+    <figcaption>Every configuration from the table below on a <strong>linear</strong> frame-rate
+      axis: eleven methods plus five variants per benchmark. Eleven of the sixteen points fall
+      below 500&nbsp;FPS and pile up against the left edge, which is the size of the gap in
+      absolute terms.</figcaption>
+  </figure>
+  <figure>
+    <img src="static/images/pareto_all.png" alt="The same all-methods comparison on a logarithmic frame-rate axis, which separates the slower methods">
+    <figcaption>The same data on a <strong>log</strong> frame-rate axis, which spreads the slow
+      cluster out so the baselines can be told apart. Hollow markers are variants of the filled
+      marker they connect to.</figcaption>
   </figure>
   </div>
 
