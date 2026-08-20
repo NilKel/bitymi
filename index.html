@@ -477,13 +477,15 @@
     <em>FastGS (Big)</em> is FastGS's own <code>train_big.sh</code> recipe, its
     higher-quality/slower configuration; size is unrecorded because those checkpoints were not
     packaged for deployment.
-    <em>Ours (no reg)</em> and <em>Ours (HQ)</em> are ablations of our two speed-critical design
-    choices, each retrained, baked and finetuned identically. Dropping the error-guided falloff
-    regulariser costs 1.5&ndash;1.6&times; the frame rate for +0.3&ndash;0.4&nbsp;dB; additionally
-    swapping the compact Beta kernel for a Gaussian costs 1.9&ndash;2.2&times; for
-    +0.4&ndash;0.7&nbsp;dB. Both alternatives inflate the model (123K primitives with the
-    regulariser, 168K without, 248K with the Gaussian on Mip-NeRF&nbsp;360), and neither keeps the
-    throughput lead: at 962 and 706&nbsp;FPS they fall below FastGS and FastGS&nbsp;(Big).
+    <em>Ours (no reg)</em> and <em>Ours (HQ)</em> ablate our two speed-critical design choices,
+    each retrained, baked and finetuned identically. They form a ladder rather than independent
+    knobs: the falloff regulariser acts on the Beta shape parameter, so the Gaussian variant (HQ)
+    is necessarily unregularised. Adopting the compact Beta kernel is worth
+    1.3&ndash;1.4&times; the frame rate, switching the regulariser on a further
+    1.5&ndash;1.6&times;, and together 1.9&ndash;2.2&times;, for a combined
+    0.4&ndash;0.7&nbsp;dB of PSNR. Both steps shrink the model (248K primitives, then 168K, then
+    123K on Mip-NeRF&nbsp;360), and neither alternative keeps the throughput lead: at 962 and
+    706&nbsp;FPS they fall below FastGS and FastGS&nbsp;(Big).
   </p>
   </div>
 
