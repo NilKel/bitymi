@@ -398,7 +398,7 @@
       <tr><td>BBSplat</td><td class="n">26.80</td><td class="n">0.7874</td><td class="n">0.2355</td><td class="n">237,778</td><td class="n">176</td><td class="n">48</td></tr>
       <tr><td>Nexels (40K)</td><td class="n">25.99</td><td class="n">0.7619</td><td class="n">0.2411</td><td class="n">39,977</td><td class="n">138</td><td class="n">119</td></tr>
       <tr><td>Nexels (100K)</td><td class="n">26.55</td><td class="n">0.7764</td><td class="n">0.2245</td><td class="n">99,934</td><td class="n">282</td><td class="n">100</td></tr>
-      <tr><td>Nexels (400K)</td><td class="n">27.21</td><td class="n">0.8018</td><td class="n r3">0.2057</td><td class="n">399,771</td><td class="n">230</td><td class="n">78</td></tr>
+      <tr><td>Nexels (400K)</td><td class="n">27.21</td><td class="n">0.8018</td><td class="n">0.2057</td><td class="n">399,771</td><td class="n">230</td><td class="n">78</td></tr>
       <tr><td>Speedy-Splat</td><td class="n">26.91</td><td class="n">0.7883</td><td class="n">0.2875</td><td class="n">315,961</td><td class="n">75</td><td class="n r2">1259</td></tr>
       <tr><td>FastGS</td><td class="n">27.44</td><td class="n">0.7967</td><td class="n">0.2589</td><td class="n">394,189</td><td class="n">98</td><td class="n r3">1209</td></tr>
       <tr><td>FastGS (Big)</td><td class="n r3">27.80</td><td class="n r2">0.8191</td><td class="n">0.2160</td><td class="n">1,161,438</td><td class="n">&mdash;</td><td class="n">890</td></tr>
@@ -406,6 +406,7 @@
       <tr><td>Textured Gaussians</td><td class="n">25.86</td><td class="n">0.7336</td><td class="n">0.2857</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">28</td></tr>
       <tr><td>NeST</td><td class="n">26.39</td><td class="n">0.7734</td><td class="n">0.2257</td><td class="n">961,163</td><td class="n">224</td><td class="n">24</td></tr>
       <tr class="ours"><td>Ours (HQ)</td><td class="n r2">27.88</td><td class="n">0.8070</td><td class="n r2">0.1981</td><td class="n">248,341</td><td class="n">839</td><td class="n">706</td></tr>
+      <tr class="ours"><td>Ours (no reg)</td><td class="n">27.65</td><td class="n">0.8015</td><td class="n r3">0.2048</td><td class="n">168,017</td><td class="n">596</td><td class="n">962</td></tr>
       <tr class="ours"><td><strong>Ours</strong></td><td class="n">27.23</td><td class="n">0.7892</td><td class="n">0.2114</td><td class="n">123,051</td><td class="n">445</td><td class="n r1"><strong>1538</strong></td></tr>
     </tbody>
   </table>
@@ -418,22 +419,23 @@
       <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n">FPS <span class="arw">&uarr;</span></th></tr>
     </thead>
     <tbody>
-      <tr><td>3DGS</td><td class="n">23.74</td><td class="n r3">0.8574</td><td class="n">0.1692</td><td class="n">1,574,592</td><td class="n">372</td><td class="n">259</td></tr>
+      <tr><td>3DGS</td><td class="n">23.74</td><td class="n">0.8574</td><td class="n">0.1692</td><td class="n">1,574,592</td><td class="n">372</td><td class="n">259</td></tr>
       <tr><td>2DGS</td><td class="n">23.15</td><td class="n">0.8367</td><td class="n">0.2118</td><td class="n">851,362</td><td class="n">198</td><td class="n">230</td></tr>
-      <tr><td>Beta-Splatting</td><td class="n r1"><strong>24.71</strong></td><td class="n r1"><strong>0.8735</strong></td><td class="n r2">0.1434</td><td class="n">1,750,000</td><td class="n">200</td><td class="n">190</td></tr>
+      <tr><td>Beta-Splatting</td><td class="n r1"><strong>24.71</strong></td><td class="n r1"><strong>0.8735</strong></td><td class="n r3">0.1434</td><td class="n">1,750,000</td><td class="n">200</td><td class="n">190</td></tr>
       <tr><td>Beta-Splatting (200K)</td><td class="n">23.38</td><td class="n">0.8348</td><td class="n">0.2144</td><td class="n">200,000</td><td class="n">23</td><td class="n">524</td></tr>
       <tr><td>BBSplat</td><td class="n">23.70</td><td class="n">0.8570</td><td class="n">0.1501</td><td class="n">300,000</td><td class="n">226</td><td class="n">80</td></tr>
       <tr><td>Nexels (40K)</td><td class="n">22.25</td><td class="n">0.7942</td><td class="n">0.2113</td><td class="n">39,979</td><td class="n">138</td><td class="n">204</td></tr>
       <tr><td>Nexels (100K)</td><td class="n">22.92</td><td class="n">0.8244</td><td class="n">0.1752</td><td class="n">99,932</td><td class="n">282</td><td class="n">181</td></tr>
       <tr><td>Nexels (400K)</td><td class="n">23.62</td><td class="n">0.8449</td><td class="n">0.1576</td><td class="n">399,767</td><td class="n">230</td><td class="n">137</td></tr>
-      <tr><td>Speedy-Splat</td><td class="n">23.44</td><td class="n">0.8252</td><td class="n">0.2399</td><td class="n">181,817</td><td class="n">43</td><td class="n r2">1459</td></tr>
-      <tr><td>FastGS</td><td class="n">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td><td class="n">242,133</td><td class="n">60</td><td class="n r3">1243</td></tr>
+      <tr><td>Speedy-Splat</td><td class="n">23.44</td><td class="n">0.8252</td><td class="n">0.2399</td><td class="n">181,817</td><td class="n">43</td><td class="n r3">1459</td></tr>
+      <tr><td>FastGS</td><td class="n">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td><td class="n">242,133</td><td class="n">60</td><td class="n">1243</td></tr>
       <tr><td>FastGS (Big)</td><td class="n r3">24.36</td><td class="n">0.8572</td><td class="n">0.1758</td><td class="n">543,997</td><td class="n">&mdash;</td><td class="n">959</td></tr>
       <tr><td>Content-Aware Texturing</td><td class="n">23.37</td><td class="n">0.8387</td><td class="n">0.1973</td><td class="n">133,880</td><td class="n">127</td><td class="n">270</td></tr>
       <tr><td>Textured Gaussians</td><td class="n">22.70</td><td class="n">0.8058</td><td class="n">0.2161</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
       <tr><td>NeST</td><td class="n">22.54</td><td class="n">0.8178</td><td class="n">0.1866</td><td class="n">378,448</td><td class="n">90</td><td class="n">48</td></tr>
       <tr class="ours"><td>Ours (HQ)</td><td class="n r2">24.50</td><td class="n r2">0.8598</td><td class="n r1"><strong>0.1392</strong></td><td class="n">149,681</td><td class="n">539</td><td class="n">1161</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n">24.10</td><td class="n">0.8507</td><td class="n r3">0.1447</td><td class="n">86,746</td><td class="n">325</td><td class="n r1"><strong>2217</strong></td></tr>
+      <tr class="ours"><td>Ours (no reg)</td><td class="n r3">24.36</td><td class="n r3">0.8578</td><td class="n r2">0.1415</td><td class="n">107,428</td><td class="n">397</td><td class="n r2">1524</td></tr>
+      <tr class="ours"><td><strong>Ours</strong></td><td class="n">24.10</td><td class="n">0.8507</td><td class="n">0.1447</td><td class="n">86,746</td><td class="n">325</td><td class="n r1"><strong>2217</strong></td></tr>
     </tbody>
   </table>
   </div>
@@ -460,6 +462,7 @@
       <tr><td>Textured Gaussians</td><td class="n">29.04</td><td class="n">0.8913</td><td class="n">0.2652</td><td class="n">100,000</td><td class="n">3,837</td><td class="n">30</td></tr>
       <tr><td>NeST</td><td class="n">28.86</td><td class="n">0.9021</td><td class="n">0.2273</td><td class="n">478,000</td><td class="n">113</td><td class="n">38</td></tr>
       <tr class="ours"><td>Ours (HQ)</td><td class="n r3">30.28</td><td class="n">0.9000</td><td class="n r2">0.2095</td><td class="n">133,095</td><td class="n">498</td><td class="n">961</td></tr>
+      <tr class="ours"><td>Ours (no reg)</td><td class="n">30.25</td><td class="n">0.9008</td><td class="n">0.2117</td><td class="n">93,813</td><td class="n">366</td><td class="n">1237</td></tr>
       <tr class="ours"><td><strong>Ours</strong></td><td class="n">29.87</td><td class="n">0.8902</td><td class="n">0.2176</td><td class="n">66,622</td><td class="n">259</td><td class="n r1"><strong>2014</strong></td></tr>
     </tbody>
   </table>
@@ -474,10 +477,13 @@
     <em>FastGS (Big)</em> is FastGS's own <code>train_big.sh</code> recipe, its
     higher-quality/slower configuration; size is unrecorded because those checkpoints were not
     packaged for deployment.
-    <em>Ours (HQ)</em> swaps the Beta kernel for a Gaussian kernel in our highest-quality
-    configuration: +0.3&ndash;0.6&nbsp;dB and &minus;0.006 to &minus;0.014 LPIPS over our shipped
-    model at roughly half the frame rate. A Gaussian has no compact support, so each surfel spawns
-    far more fragments; the Beta kernel remains our default for exactly that reason.
+    <em>Ours (no reg)</em> and <em>Ours (HQ)</em> are ablations of our two speed-critical design
+    choices, each retrained, baked and finetuned identically. Dropping the error-guided falloff
+    regulariser costs 1.5&ndash;1.6&times; the frame rate for +0.3&ndash;0.4&nbsp;dB; additionally
+    swapping the compact Beta kernel for a Gaussian costs 1.9&ndash;2.2&times; for
+    +0.4&ndash;0.7&nbsp;dB. Both alternatives inflate the model (123K primitives with the
+    regulariser, 168K without, 248K with the Gaussian on Mip-NeRF&nbsp;360), and neither keeps the
+    throughput lead: at 962 and 706&nbsp;FPS they fall below FastGS and FastGS&nbsp;(Big).
   </p>
   </div>
 
