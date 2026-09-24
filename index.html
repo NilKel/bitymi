@@ -109,6 +109,37 @@
   .dl-body{padding:.9rem 1.1rem 1.05rem; flex:1}
   .dl-title{font-weight:700; font-size:1.1rem}
   .dl-meta{color:var(--muted); font-size:.86rem; margin-top:.2rem}
+  /* ---------- Method comparison player ---------- */
+  /* One <video> per scene holds all three methods as a 2x2 grid (tile 4 empty),
+     so the canvas can draw any mix of them from the SAME decoded frame and the
+     split never drifts out of sync. */
+  .cmp{margin:1.4rem 0 .4rem; outline:none}
+  .cmp-tabs{display:flex; gap:.4rem; justify-content:center; flex-wrap:wrap; margin-bottom:.7rem}
+  .cmp-tab{background:transparent; color:var(--fg); border:1px solid var(--line); border-radius:999px;
+           padding:.3rem 1rem; font:600 .9rem/1.4 inherit; font-family:inherit; cursor:pointer}
+  .cmp-tab:hover{border-color:var(--accent)}
+  .cmp-tab[aria-selected="true"]{background:var(--fg); color:var(--bg); border-color:var(--fg)}
+  .cmp-stage{position:relative; border-radius:10px; overflow:hidden; border:1px solid var(--line);
+             background:#000; touch-action:pan-y; user-select:none; -webkit-user-select:none}
+  .cmp-stage.grab{touch-action:none}
+  .cmp-stage canvas{display:block; width:100%; height:auto}
+  /* kept in the layout (not display:none) so every browser keeps decoding frames */
+  .cmp-stage video{position:absolute; left:0; top:0; width:2px; height:2px; opacity:0; pointer-events:none}
+  .cmp-hint{position:absolute; left:50%; bottom:12px; transform:translateX(-50%);
+            background:rgba(0,0,0,.72); color:#fff; font-size:.82rem; padding:.3rem .8rem;
+            border-radius:999px; pointer-events:none; white-space:nowrap; opacity:0; transition:opacity .2s}
+  .cmp-hint.on{opacity:1}
+  .cmp-bar{display:flex; align-items:center; gap:.5rem; margin-top:.6rem; flex-wrap:wrap}
+  .cmp-btn{display:inline-flex; align-items:center; justify-content:center; gap:.35rem; min-width:2.4rem; height:2.2rem;
+           padding:0 .8rem; background:transparent; color:var(--fg); border:1px solid var(--line);
+           border-radius:999px; font:600 .85rem/1 inherit; font-family:inherit; cursor:pointer}
+  .cmp-btn:hover{border-color:var(--accent)}
+  .cmp-btn[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
+  .cmp-btn:disabled{opacity:.4; cursor:default; border-color:var(--line)}
+  .cmp-btn svg{width:15px; height:15px; fill:currentColor}
+  .cmp-scrub{flex:1 1 160px; accent-color:var(--accent); min-width:120px}
+  .cmp-frame{font:500 .82rem/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; color:var(--muted);
+             min-width:6.2em; text-align:right}
   /* ---------- Results table ---------- */
   .restable{width:100%; border-collapse:collapse; font-size:.87rem; margin:.6rem 0 .3rem}
   .restable th,.restable td{padding:.42em .5em; border-bottom:1px solid var(--line); text-align:left}
@@ -385,6 +416,36 @@
     </div>
     <figcaption>All 13 benchmark scenes, baked with the extent-3 + rate&ndash;distortion atlas allocation and texture-finetuned (the configuration reported in the results table). Runs on WebGPU with the same texture-only renderer; sizes are the full downloadable bundle.</figcaption>
   </figure>
+
+  <h3 style="text-align:center">Side-by-side with FastGS and Nexels</h3>
+  <p>The same camera orbit rendered by all three methods. Drag the two white handles to move the
+     split. Pause and press <strong>Crop</strong>, then drag a box over the frame to zoom into it;
+     the split still works inside the zoom. Press play to zoom back out and carry on.</p>
+  <div class="cmp" id="cmp" tabindex="0" aria-label="Method comparison player">
+    <div class="cmp-tabs" role="tablist">
+      <button class="cmp-tab" role="tab" data-scene="bicycle" data-w="1236" data-h="822">Bicycle</button>
+      <button class="cmp-tab" role="tab" data-scene="garden" data-w="1296" data-h="840">Garden</button>
+      <button class="cmp-tab" role="tab" data-scene="bonsai" data-w="1558" data-h="1038">Bonsai</button>
+    </div>
+    <div class="cmp-stage">
+      <canvas aria-label="Three-way split of the selected scene"></canvas>
+      <video muted playsinline loop preload="none"></video>
+      <div class="cmp-hint"></div>
+    </div>
+    <div class="cmp-bar">
+      <button class="cmp-btn" data-act="play" aria-label="Play"><svg viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z"/></svg></button>
+      <button class="cmp-btn" data-act="prev" aria-label="Previous frame"><svg viewBox="0 0 16 16"><path d="M3 3h2v10H3zM13 3v10L6 8z"/></svg></button>
+      <button class="cmp-btn" data-act="next" aria-label="Next frame"><svg viewBox="0 0 16 16"><path d="M11 3h2v10h-2zM3 3v10l7-5z"/></svg></button>
+      <input class="cmp-scrub" type="range" min="0" max="239" step="1" value="0" aria-label="Frame">
+      <span class="cmp-frame">0 / 239</span>
+      <button class="cmp-btn" data-act="crop" aria-pressed="false" title="Pause and drag a box to zoom (C)"><svg viewBox="0 0 16 16" style="fill:none;stroke:currentColor;stroke-width:1.8"><path d="M4 1v11h11M1 4h11v11"/></svg>Crop</button>
+      <button class="cmp-btn" data-act="reset" disabled title="Zoom back out (Esc)">Reset zoom</button>
+    </div>
+  </div>
+  <figcaption>Left to right at the start: <strong>Ours</strong> (rendered from the baked BC7 texture
+    atlas), <strong>FastGS</strong>, <strong>Nexels (400K)</strong>. Keys when the player is focused:
+    Space plays and pauses, &larr;/&rarr; step one frame, C starts a crop, Esc zooms out. The videos are
+    H.264, so the finest detail is slightly softened by compression for every method alike.</figcaption>
 
   <!-- =================== RESULTS =================== -->
   <!-- Qualitative results figures removed for now (comparison.png /
@@ -721,6 +782,264 @@
       b.textContent = open ? hideText : showText;
     });
   });
+</script>
+
+<script>
+/* Method comparison player. Each scene is ONE video whose frame is a 2x2 grid:
+   tile 0 = ours, 1 = FastGS, 2 = Nexels (tile 3 blank). The canvas draws the
+   current view rectangle (tile pixels) from each tile into its own vertical
+   band, so the split, the zoom and playback always show the same frame. */
+(function () {
+  var root = document.getElementById('cmp');
+  if (!root) return;
+  var FPS = 30, NFRAMES = 240, LABELS = ['Ours', 'FastGS', 'Nexels (400K)'];
+  var MAX_ZOOM = 12, ANIM_MS = 450;
+  var stage = root.querySelector('.cmp-stage'), canvas = stage.querySelector('canvas'),
+      ctx = canvas.getContext('2d'), video = stage.querySelector('video'),
+      hint = stage.querySelector('.cmp-hint'), scrub = root.querySelector('.cmp-scrub'),
+      frameLbl = root.querySelector('.cmp-frame'), tabs = root.querySelectorAll('.cmp-tab'),
+      btn = {};
+  root.querySelectorAll('[data-act]').forEach(function (b) { btn[b.dataset.act] = b; });
+
+  var tw = 1, th = 1, poster = null, split = [1 / 3, 2 / 3];
+  var view = null, anim = null, cropMode = false, drag = null, box = null, hintTimer = 0;
+  var dpr = 1, cw = 1, ch = 1, visible = false, pendingSrc = '';
+
+  function full() { return { x: 0, y: 0, w: tw, h: th }; }
+  function zoomed() { return view && view.w < tw - 0.5; }
+  function ease(t) { return t < 0 ? 0 : t > 1 ? 1 : t * t * (3 - 2 * t); }
+
+  function showHint(text, ms) {
+    hint.textContent = text; hint.classList.add('on');
+    clearTimeout(hintTimer);
+    if (ms) hintTimer = setTimeout(function () { hint.classList.remove('on'); }, ms);
+  }
+  function hideHint() { clearTimeout(hintTimer); hint.classList.remove('on'); }
+
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cw = Math.max(1, Math.round(stage.clientWidth * dpr));
+    ch = Math.max(1, Math.round(cw * th / tw));
+    canvas.width = cw; canvas.height = ch;
+  }
+
+  function loadScene(tab) {
+    tabs.forEach(function (t) { t.setAttribute('aria-selected', String(t === tab)); });
+    tw = +tab.dataset.w; th = +tab.dataset.h;
+    var base = 'static/videos/compare/' + tab.dataset.scene;
+    poster = new Image(); poster.src = base + '_poster.jpg';
+    pendingSrc = base + '.mp4';
+    view = full(); anim = null; box = null; setCrop(false); stage.classList.remove('grab');
+    resize();
+    if (visible) startVideo();
+  }
+  // the ~20-40 MB video is only fetched once the player scrolls into view
+  function startVideo() {
+    if (!pendingSrc) return;
+    video.preload = 'auto'; video.src = pendingSrc; pendingSrc = '';
+    setPlaying(true);
+  }
+
+  // ----- coordinates -----
+  function toCanvas(e) {
+    var r = canvas.getBoundingClientRect();
+    return { x: (e.clientX - r.left) * cw / r.width, y: (e.clientY - r.top) * ch / r.height };
+  }
+  function toTile(p) { return { x: view.x + p.x / cw * view.w, y: view.y + p.y / ch * view.h }; }
+  function clampView(v) {
+    v.w = Math.min(tw, Math.max(tw / MAX_ZOOM, v.w)); v.h = v.w * th / tw;
+    v.x = Math.min(tw - v.w, Math.max(0, v.x)); v.y = Math.min(th - v.h, Math.max(0, v.y));
+    return v;
+  }
+
+  function animateTo(target, done) {
+    anim = { from: { x: view.x, y: view.y, w: view.w, h: view.h }, to: target,
+             t0: performance.now(), done: done };
+  }
+  function stepAnim(now) {
+    if (!anim) return;
+    var e = ease((now - anim.t0) / ANIM_MS), a = anim.from, b = anim.to;
+    view = { x: a.x + (b.x - a.x) * e, y: a.y + (b.y - a.y) * e,
+             w: a.w + (b.w - a.w) * e, h: a.h + (b.h - a.h) * e };
+    if (e >= 1) { var d = anim.done; anim = null; view = b; if (d) d(); }
+  }
+
+  // ----- drawing -----
+  function source() {
+    if (video.readyState >= 2 && video.videoWidth) return { img: video, s: video.videoWidth / (2 * tw) };
+    if (poster && poster.complete && poster.naturalWidth) return { img: poster, s: poster.naturalWidth / (2 * tw) };
+    return null;
+  }
+  function pill(text, cx, y, align) {
+    var fs = Math.round(13 * dpr), pad = 7 * dpr;
+    ctx.font = '600 ' + fs + 'px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif';
+    var w = ctx.measureText(text).width + 2 * pad, h = fs + 2 * pad * 0.8;
+    var x = align === 'left' ? cx : align === 'right' ? cx - w : cx - w / 2;
+    ctx.fillStyle = 'rgba(0,0,0,.66)';
+    ctx.beginPath();
+    if (ctx.roundRect) ctx.roundRect(x, y, w, h, h / 2); else ctx.rect(x, y, w, h);
+    ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.textBaseline = 'middle'; ctx.fillText(text, x + pad, y + h / 2 + 0.5);
+    return w;
+  }
+  function draw() {
+    var src = source();
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, cw, ch);
+    var xs = [0, split[0] * cw, split[1] * cw, cw];
+    if (src) {
+      ctx.imageSmoothingEnabled = true; ctx.imageSmoothingQuality = 'high';
+      for (var k = 0; k < 3; k++) {
+        if (xs[k + 1] - xs[k] < 0.5) continue;
+        var ox = (k % 2) * tw, oy = Math.floor(k / 2) * th;
+        ctx.save(); ctx.beginPath(); ctx.rect(xs[k], 0, xs[k + 1] - xs[k], ch); ctx.clip();
+        ctx.drawImage(src.img, (ox + view.x) * src.s, (oy + view.y) * src.s, view.w * src.s, view.h * src.s, 0, 0, cw, ch);
+        ctx.restore();
+      }
+    }
+    // dividers + handles
+    for (var i = 0; i < 2; i++) {
+      var x = split[i] * cw;
+      ctx.fillStyle = '#fff'; ctx.fillRect(x - dpr, 0, 2 * dpr, ch);
+      ctx.beginPath(); ctx.arc(x, ch / 2, 13 * dpr, 0, 2 * Math.PI);
+      ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,.35)'; ctx.lineWidth = dpr; ctx.stroke();
+      ctx.fillStyle = '#222';
+      [-1, 1].forEach(function (d) {
+        ctx.beginPath(); ctx.moveTo(x + d * 8 * dpr, ch / 2); ctx.lineTo(x + d * 3 * dpr, ch / 2 - 5 * dpr);
+        ctx.lineTo(x + d * 3 * dpr, ch / 2 + 5 * dpr); ctx.closePath(); ctx.fill();
+      });
+    }
+    // method labels, centred in their band (dropped when the band is too narrow)
+    for (var k2 = 0; k2 < 3; k2++) {
+      var bw = xs[k2 + 1] - xs[k2];
+      if (bw > 90 * dpr) pill(LABELS[k2], (xs[k2] + xs[k2 + 1]) / 2, 10 * dpr);
+    }
+    if (zoomed()) pill((tw / view.w).toFixed(1) + '× zoom', cw - 10 * dpr, ch - 36 * dpr, 'right');
+    if (box) {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0,0,0,.35)';
+      ctx.fillRect(0, 0, cw, box.y); ctx.fillRect(0, box.y + box.h, cw, ch - box.y - box.h);
+      ctx.fillRect(0, box.y, box.x, box.h); ctx.fillRect(box.x + box.w, box.y, cw - box.x - box.w, box.h);
+      ctx.strokeStyle = '#ff3b30'; ctx.lineWidth = 2.5 * dpr; ctx.strokeRect(box.x, box.y, box.w, box.h);
+      ctx.restore();
+    }
+  }
+
+  function currentFrame() { return Math.min(NFRAMES - 1, Math.max(0, Math.floor(video.currentTime * FPS + 1e-3))); }
+  function loop(now) {
+    stepAnim(now);
+    if (!scrub.matches(':active')) scrub.value = currentFrame();
+    frameLbl.textContent = scrub.value + ' / ' + (NFRAMES - 1);
+    if (visible || anim) draw();
+    requestAnimationFrame(loop);
+  }
+
+  // ----- controls -----
+  var PLAY = '<svg viewBox="0 0 16 16"><path d="M4 2.5v11l9-5.5z"/></svg>',
+      PAUSE = '<svg viewBox="0 0 16 16"><path d="M3.5 2.5h3v11h-3zm6 0h3v11h-3z"/></svg>';
+  function syncPlayBtn() {
+    var playing = !video.paused;
+    btn.play.innerHTML = playing ? PAUSE : PLAY;
+    btn.play.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    btn.reset.disabled = !zoomed() && !anim;
+  }
+  function setPlaying(on) {
+    if (!on) { video.pause(); return; }
+    setCrop(false);
+    var go = function () { var p = video.play(); if (p && p.catch) p.catch(function () {}); };
+    stage.classList.remove('grab');
+    if (zoomed()) animateTo(full(), go); else go();   // play = zoom back out, then resume
+  }
+  function setCrop(on) {
+    cropMode = on; box = null;
+    btn.crop.setAttribute('aria-pressed', String(on));
+    stage.classList.toggle('grab', on || zoomed());
+    canvas.style.cursor = on ? 'crosshair' : '';
+    if (on) { video.pause(); showHint('Drag a box over the area to zoom into'); } else hideHint();
+  }
+  function seekFrame(f) {
+    f = Math.min(NFRAMES - 1, Math.max(0, f));
+    video.pause(); video.currentTime = (f + 0.5) / FPS; scrub.value = f;
+  }
+
+  btn.play.addEventListener('click', function () { setPlaying(video.paused); });
+  btn.prev.addEventListener('click', function () { seekFrame(currentFrame() - 1); });
+  btn.next.addEventListener('click', function () { seekFrame(currentFrame() + 1); });
+  btn.crop.addEventListener('click', function () { setCrop(!cropMode); });
+  btn.reset.addEventListener('click', function () { setCrop(false); animateTo(full(), function () { stage.classList.remove('grab'); }); });
+  scrub.addEventListener('input', function () { seekFrame(+scrub.value); });
+  video.addEventListener('play', syncPlayBtn);
+  video.addEventListener('pause', syncPlayBtn);
+  tabs.forEach(function (t) { t.addEventListener('click', function () { loadScene(t); }); });
+
+  root.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) return;
+    if (e.key === ' ') { e.preventDefault(); setPlaying(video.paused); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); seekFrame(currentFrame() - 1); }
+    else if (e.key === 'ArrowRight') { e.preventDefault(); seekFrame(currentFrame() + 1); }
+    else if (e.key === 'c' || e.key === 'C') setCrop(!cropMode);
+    else if (e.key === 'Escape') { if (cropMode) setCrop(false); else if (zoomed()) btn.reset.click(); }
+  });
+
+  // ----- pointer: dividers, crop box, pan, click-to-toggle -----
+  function nearDivider(p) {
+    var best = -1, bd = 16 * dpr;
+    for (var i = 0; i < 2; i++) { var d = Math.abs(p.x - split[i] * cw); if (d < bd) { bd = d; best = i; } }
+    return best;
+  }
+  canvas.addEventListener('pointerdown', function (e) {
+    if (e.button !== 0) return;
+    var p = toCanvas(e), div = cropMode ? -1 : nearDivider(p);
+    drag = { start: p, last: p, moved: false,
+             kind: div >= 0 ? 'div' : cropMode ? 'crop' : zoomed() ? 'pan' : 'click', div: div };
+    canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener('pointermove', function (e) {
+    var p = toCanvas(e);
+    if (!drag) { canvas.style.cursor = cropMode ? 'crosshair' : nearDivider(p) >= 0 ? 'ew-resize' : zoomed() ? 'grab' : 'pointer'; return; }
+    if (Math.hypot(p.x - drag.start.x, p.y - drag.start.y) > 4 * dpr) drag.moved = true;
+    if (drag.kind === 'div') {
+      var f = p.x / cw, m = 0.0;
+      if (drag.div === 0) split[0] = Math.min(split[1] - m, Math.max(0, f));
+      else split[1] = Math.max(split[0] + m, Math.min(1, f));
+    } else if (drag.kind === 'crop') {
+      // aspect-locked to the frame so the zoom fills the canvas without distortion
+      var dx = p.x - drag.start.x, dy = p.y - drag.start.y, a = ch / cw;
+      var w = Math.max(Math.abs(dx), Math.abs(dy) / a), h = w * a;
+      box = { x: dx < 0 ? drag.start.x - w : drag.start.x, y: dy < 0 ? drag.start.y - h : drag.start.y, w: w, h: h };
+    } else if (drag.kind === 'pan') {
+      view = clampView({ x: view.x - (p.x - drag.last.x) / cw * view.w, y: view.y - (p.y - drag.last.y) / ch * view.h, w: view.w, h: view.h });
+      canvas.style.cursor = 'grabbing';
+    }
+    drag.last = p;
+  });
+  function endDrag() {
+    if (!drag) return;
+    var d = drag; drag = null;
+    if (d.kind === 'crop') {
+      if (box && box.w > 12 * dpr) {
+        var a = toTile({ x: box.x, y: box.y }), b = toTile({ x: box.x + box.w, y: box.y + box.h });
+        var target = clampView({ x: a.x, y: a.y, w: b.x - a.x, h: b.y - a.y });
+        box = null; setCrop(false); stage.classList.add('grab');
+        animateTo(target, syncPlayBtn);
+        showHint('Drag the handles to compare · press play to zoom out', 2600);
+      } else { box = null; }
+    } else if (d.kind === 'click' || (d.kind === 'pan' && !d.moved)) {
+      if (!d.moved) setPlaying(video.paused);
+    }
+    syncPlayBtn();
+  }
+  canvas.addEventListener('pointerup', endDrag);
+  canvas.addEventListener('pointercancel', function () { drag = null; box = null; });
+
+  new ResizeObserver(resize).observe(stage);
+  new IntersectionObserver(function (es) {
+    visible = es[0].isIntersecting;
+    if (visible) startVideo();
+  }, { rootMargin: '200px' }).observe(stage);
+  loadScene(tabs[0]);
+  requestAnimationFrame(loop);
+})();
 </script>
 </body>
 </html>
