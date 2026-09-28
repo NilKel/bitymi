@@ -3,19 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- ============================================================
-     EDIT THIS: page title shown in the browser tab / search results
-     ============================================================ -->
-<title>Bake It Till You Make It: Ultrafast Spatial Texture-Surfel Splatting</title>
-<meta name="description" content="Ultrafast novel view synthesis by baking a view-independent texture residual: 2600+ FPS on every benchmark on the GPU&#39;s fixed-function rasterizer (12-20x faster than 3DGS), best LPIPS among methods above 1000 FPS, over 10x fewer primitives than 3DGS.">
-
-<!-- Open Graph / social preview. EDIT the og:image URL and og:url. -->
+<title>Bake It Till You Make It: Ultrafast Spatial Texture Atlas Splatting</title>
+<meta name="description" content="A 2D surfel representation whose neural texture is baked into a hardware-compressed texture atlas: 7-9x the frame rate of 3DGS, 2,700-4,400 FPS on the GPU hardware rasterizer.">
 <meta property="og:title" content="Bake It Till You Make It">
-<meta property="og:description" content="Ultrafast texture-surfel splatting: 2600+ FPS on every benchmark, 12-20x faster than 3DGS, real-time on a phone.">
+<meta property="og:description" content="Ultrafast spatial texture atlas splatting: 7-9x the frame rate of 3DGS, 2,700-4,400 FPS with hardware rasterization.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://nilkel.github.io/bitymi/">
 <meta property="og:image" content="https://nilkel.github.io/bitymi/static/images/teaser.jpg">
-
 <style>
   :root{
     --bg:#ffffff; --fg:#1a1a1a; --muted:#5a6472; --line:#e6e8ec;
@@ -209,22 +203,58 @@
 
   footer{border-top:1px solid var(--line); margin-top:3rem; padding:1.6rem 0 3rem;
          color:var(--muted); font-size:.9rem; text-align:center}
+  /* ---------- additions (Sep 2026 redesign) ---------- */
+  .lead{font-size:1.02rem}
+  .contrib{padding-left:1.2rem} .contrib li{margin:.35rem 0}
+  .pair{display:grid; grid-template-columns:43fr 57fr; gap:.8rem; align-items:center}
+  @media (max-width:640px){ .pair{grid-template-columns:1fr} }
+  figure img.flat{background:#fff}
+  .cmp-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:.6rem; margin:.2rem 0 .7rem}
+  .cmp-stat{border:1px solid var(--line); border-radius:10px; padding:.55rem .8rem .6rem}
+  .cmp-stat .m{font-weight:700; font-size:.95rem; margin-bottom:.3rem}
+  .cmp-stat.ours .m{color:var(--accent)}
+  .cmp-stat dl{display:grid; grid-template-columns:auto 1fr; gap:.1rem .6rem; margin:0; font-size:.86rem}
+  .cmp-stat dt{color:var(--muted)} .cmp-stat dd{margin:0; text-align:right; font-variant-numeric:tabular-nums}
+  .cmp-stat .hw{color:var(--muted); font-size:.9em}
+  @media (max-width:640px){ .cmp-stats{grid-template-columns:1fr} }
+  /* ---------- interactive results chart ---------- */
+  .ctrl{display:flex; flex-wrap:wrap; gap:.5rem 1rem; justify-content:center; align-items:center; margin:.6rem 0}
+  .seg{display:inline-flex; border:1px solid var(--line); border-radius:999px; overflow:hidden}
+  .seg button{background:transparent; color:var(--fg); border:0; padding:.35rem .85rem; font:600 .85rem/1.2 inherit; cursor:pointer}
+  .seg button+button{border-left:1px solid var(--line)}
+  .seg button[aria-pressed="true"]{background:var(--fg); color:var(--bg)}
+  @media (max-width:480px){ .seg button{padding:.3rem .5rem; font-size:.76rem} }
+  .chk{font-size:.85rem; color:var(--muted); display:inline-flex; gap:.35rem; align-items:center; cursor:pointer}
+  .chart{position:relative; border:1px solid var(--line); border-radius:12px; background:var(--card); padding:.4rem}
+  .chart svg{display:block; width:100%; height:auto; font-family:inherit}
+  .chart .ax{stroke:var(--muted); stroke-width:1}
+  .chart .grid{stroke:var(--line); stroke-width:1}
+  .chart .tick{fill:var(--muted); font-size:12px}
+  .chart .alab{fill:var(--fg); font-size:13px; font-weight:600}
+  .chart .front{fill:var(--accent); opacity:.07}
+  .chart .frontline{fill:none; stroke:var(--accent); stroke-width:1.2; stroke-dasharray:4 3; opacity:.6}
+  .chart .pt{cursor:pointer; transition:opacity .12s}
+  .chart .plab{font-size:11.5px; fill:var(--fg); pointer-events:none}
+  .chart .hwlink{stroke-width:1.4; stroke-dasharray:4 3; fill:none}
+  .chart.dim .pt:not(.hl), .chart.dim .plab:not(.hl), .chart.dim .hwlink:not(.hl){opacity:.15}
+  .tip{position:absolute; pointer-events:none; background:var(--bg); border:1px solid var(--line); border-radius:8px;
+       padding:.45rem .6rem; font-size:.8rem; line-height:1.45; box-shadow:0 4px 14px rgba(0,0,0,.12); opacity:0; transition:opacity .1s; white-space:nowrap}
+  .tip.on{opacity:1} .tip b{display:block; margin-bottom:.15rem}
+  .legend{display:flex; flex-wrap:wrap; gap:.25rem .9rem; justify-content:center; margin:.6rem 0 0; font-size:.82rem}
+  .legend span{display:inline-flex; align-items:center; gap:.35rem; cursor:default}
+  .legend i{width:10px; height:10px; border-radius:50%; display:inline-block}
+  #restab td,#restab th{white-space:nowrap}
+  #restab td.grp{border-top:2px solid var(--line)}
 </style>
 </head>
 <body>
 
-<!-- =================== HERO =================== -->
 <header>
   <div class="wrap">
-    <!-- EDIT title/subtitle to match the final paper title -->
     <h1 class="title">Bake It Till You Make It</h1>
-    <div class="subtitle">Ultrafast Spatial Texture-Surfel Splatting</div>
-
-    <!-- EDIT venue when accepted (e.g. "ICLR 2027"); keep neutral for preprint -->
+    <div class="subtitle">Ultrafast Spatial Texture Atlas Splatting</div>
     <div class="venue">Preprint &middot; 2026</div>
-
     <div class="authors">
-      <!-- EDIT author homepage links -->
       <a href="#">Neel Kelkar</a><sup>1,2</sup>,
       <a href="#">Simon Niedermayr</a><sup>1</sup>,
       <a href="#">Kaloian Petkov</a><sup>2</sup>,
@@ -232,93 +262,77 @@
       <a href="#">R&uuml;diger Westermann</a><sup>1</sup>
     </div>
     <div class="affil"><sup>1</sup>Technical University of Munich &nbsp;&middot;&nbsp; <sup>2</sup>Siemens Healthineers</div>
-
-    <!-- =================== LINK BUTTONS ===================
-         EDIT every href. Remove buttons you do not have yet. -->
     <div class="links">
       <a class="btn" href="https://arxiv.org/pdf/2607.13808" target="_blank" rel="noopener"><span class="ico">&#128196;</span> Paper</a>
       <a class="btn ghost" href="https://arxiv.org/abs/2607.13808" target="_blank" rel="noopener"><span class="ico">&#128462;</span> arXiv</a>
-      <a class="btn ghost" href="#demo"><span class="ico">&#127918;</span> Interactive Demo</a>
+      <a class="btn ghost" href="#demo"><span class="ico">&#127918;</span> Demos</a>
+      <a class="btn ghost" href="#results"><span class="ico">&#128200;</span> Results</a>
     </div>
   </div>
 </header>
 
 <main class="wrap">
 
-  <!-- =================== TEASER =================== -->
   <figure>
-    <img src="static/images/teaser.jpg" alt="Teaser: textured surfel novel view synthesis">
-    <figcaption>
-      Our textured surfel representation decouples high-frequency texture from view-dependent
-      geometry and appearance, enabling low primitive counts and real-time rendering across
-      desktop and mobile hardware.
-    </figcaption>
+    <img src="static/images/teaser.jpg" alt="Left: garden without and with the baked texture. Middle: bonsai crops against Nexels and Speedy-Splat. Right: LPIPS against frame rate for all methods.">
+    <figcaption><em>Left:</em> our render without and with the baked texture. <em>Middle:</em> against the
+      highest-quality and the fastest baselines. <em>Right:</em> quality against frame rate, mean over three benchmarks.</figcaption>
   </figure>
 
-  <!-- =================== STATS =================== EDIT numbers -->
   <div class="stats">
-    <div class="stat"><div class="num">2600+</div><div class="lbl">FPS on every benchmark<br>(fixed-function Vulkan, RTX 5090)</div></div>
-    <div class="stat"><div class="num">12&ndash;20&times;</div><div class="lbl">faster than 3DGS<br>at over 10&times; fewer primitives</div></div>
-    <div class="stat"><div class="num">No MLP</div><div class="lbl">pure texture lookups<br>&mdash; real-time on a phone</div></div>
+    <div class="stat"><div class="num">2,700&ndash;4,400</div><div class="lbl">FPS per benchmark<br>on the GPU hardware rasterizer</div></div>
+    <div class="stat"><div class="num">7&ndash;9&times;</div><div class="lbl">the frame rate of 3DGS<br>with 10&times; fewer primitives</div></div>
+    <div class="stat"><div class="num">13 / 13</div><div class="lbl">scenes with better LPIPS than<br>FastGS and Speedy-Splat</div></div>
   </div>
 
-  <!-- =================== ABSTRACT =================== -->
   <h2>Abstract</h2>
-  <!-- EDIT to match the final paper abstract -->
   <p class="abstract">
-    Recent extensions of 3D Gaussian Splatting capture fine color detail using hash-grid based
-    appearance parameterization, but pay a high per-fragment cost from neural field queries during
-    rendering. We introduce a decoupled radiance representation that models low-frequency geometry
-    and view-dependent appearance with 2D surfels, while representing high-frequency texture as a
-    view-independent residual. Because the residual is view independent, we bake it into a compact
-    texture, so inference reduces to pure hardware texture sampling with no neural queries. Combined with sparsity-enhancing optimization, our method
-    renders significantly faster and sparser than prior work while preserving perceptual fidelity,
-    reaching real-time 4K rates on consumer hardware and real-time rendering on mobile devices.
+    Neural radiance representations in Gaussian Splatting (GS) deliver high-fidelity color detail but
+    impose substantial rendering overhead from network evaluations. We present a learned sparse scene
+    representation based on 2D surfels, which enables baking the neural component into a
+    hardware-accelerated 2D texture atlas and eliminates runtime network inference. Our 2D surfels carry
+    low-frequency geometry and view-dependent appearance, while view-independent, per-primitive
+    high-frequency texture is encoded with a spatial hash grid and converted into the texture atlas. A
+    novel sparsity objective that penalizes per-primitive kernel falloffs achieves a substantially sparser
+    representation than prior methods. With a compute-optimized ray-surfel intersection shader our
+    approach renders roughly 7 to 9&times; faster than 3DGS on common benchmarks, and over an order of
+    magnitude faster on individual scenes, while surpassing the perceptual quality and speed of the
+    fastest sparsification methods (FastGS and Speedy-Splat) at PSNR parity. A quality-optimized variant
+    matches the perceptual quality of the strongest baseline while still rendering several times faster.
+    Because inference is one texture fetch per fragment, frame rates can be pushed to 2,700&ndash;4,400 FPS
+    with no loss in quality when using the GPU hardware rasterizer.
   </p>
 
-  <!-- =================== HIGHLIGHTS =================== -->
-  <h2>Key Ideas</h2>
-  <ul class="highlights">
-    <li><strong>View-independent texture residual.</strong> Restricting the residual to be view
-      independent is what makes it bakeable, removing per-fragment neural queries at inference.</li>
-    <li><strong>Hardware-native rendering.</strong> Inference is nothing but GPU texture lookups.
-      Storing the residual as block-compressed <strong>BC7</strong> means the texture unit
-      decompresses and filters it in fixed-function hardware, at the same per-fragment cost as an
-      uncompressed fetch but a fraction of the bandwidth &mdash; and the same path runs on mobile
-      GPUs, which ship the equivalent hardware (BC7 on desktop and iOS, ASTC on Android). The rasterization itself is hardware too: a Vulkan port using the GPU&#39;s fixed-function rasterizer and ROP blending draws the same bakes 1.7&times; faster than our CUDA renderer at measured parity.</li>
-    <li><strong>Sparse geometry.</strong> Decoupling appearance from geometry lets the surfels stay
-      sparse instead of splitting to fit texture, lowering primitive count. <strong>Flattened
-      beta-surfels</strong> sharpen the opacity falloff to a compact support, so each surfel covers
-      fewer fragments and far fewer of them survive the alpha cutoff &mdash; cutting overdraw, the
-      dominant per-pixel cost once primitive count is low.</li>
-  </ul>
-
-  <!-- =================== METHOD =================== -->
   <h2>Method</h2>
   <figure>
-    <img src="static/images/pipeline_full.svg" alt="Full pipeline: per-surfel view-dependent colour plus a view-independent texture residual, baked and compressed for inference">
-    <figcaption>
-      During training, view-dependent colour is modelled per surfel while the view-independent
-      texture residual is learned separately. For inference the residual is baked and compressed,
-      so rendering uses only hardware texture sampling &mdash; no neural queries per fragment.
-    </figcaption>
+    <img class="flat" src="static/images/method.jpg" alt="Method overview: per-surfel spherical Voronoi color with a falloff regularizer, a hash-grid residual per fragment, baked into a texture atlas and rendered with the hardware rasterizer">
+    <figcaption>A hash grid learns view-independent texture, and a spherical Voronoi model per surfel
+      captures view-dependent color. A falloff prior flattens the kernels to cut overdraw. After training,
+      the grid is baked into a BC7 texture atlas, which the GPU samples in hardware.</figcaption>
+  </figure>
+  <ul class="contrib">
+    <li><strong>Signed texture residual.</strong> The texture can add to or subtract from the surfel's
+      color, so one surfel holds detail that would otherwise need several.</li>
+    <li><strong>Falloff regularizer.</strong> Beta kernels are pulled toward flat, hard-edged disks,
+      which lowers both the primitive count and overdraw.</li>
+    <li><strong>Bake and finetune.</strong> The hash grid becomes one compressed texture atlas, and its
+      texels are then finetuned directly, ending above the network they came from.</li>
+    <li><strong>Closed-form intersection.</strong> The ray&ndash;surfel intersection moves out of the
+      pixel loop, which raises the software frame rate by a third at unchanged quality.</li>
+  </ul>
+  <figure>
+    <div class="pair">
+      <img class="flat" src="static/images/decomposition.jpg" alt="Decomposition of a train scene render: full render, spherical Voronoi color only, positive and negative residual">
+      <img class="flat" src="static/images/signed_residual.jpg" alt="Toy example: a single surfel with a signed residual reproduces color variation that a positive-only texture cannot">
+    </div>
+    <figcaption><em>Left:</em> our render, the per-surfel color alone, and the positive and negative
+      parts of the residual. <em>Right:</em> one surfel under three lighting angles. A signed residual fits
+      it (53&ndash;55&nbsp;dB) where a positive-only texture cannot (14&ndash;20&nbsp;dB).</figcaption>
   </figure>
 
-  <!-- =================== DEMO / VIDEO =================== -->
-  <h2 id="demo">Interactive Demo</h2>
-
-  <!-- Video: removed from the page for now (no asset yet). Restore by
-       un-commenting one of these and re-adding the header button.
-       OPTION A: <video controls muted playsinline poster="static/images/video_poster.png">
-                   <source src="static/videos/overview.mp4" type="video/mp4"></video>
-       OPTION B: YouTube iframe embed at 56.25% padding-top. -->
-
+  <h2 id="demo">Interactive Demos</h2>
+  <p class="tcenter note">Our bakes of all 13 benchmark scenes, rendered in your browser. Needs WebGPU (Chrome or Edge 113+, Safari 18+).</p>
   <figure>
-    <!-- Interactive WebGPU viewer: host the viewer and embed it.
-         <div style="position:relative;padding-top:62%;border-radius:10px;overflow:hidden;border:1px solid var(--line)">
-           <iframe style="position:absolute;inset:0;width:100%;height:100%;border:0"
-             src="viewer/index.html" title="Interactive viewer" allow="fullscreen"></iframe>
-         </div> -->
     <div class="demogrid">
 <!-- E3RD:BEGIN -->
       <a class="demolink" href="https://nilkel.github.io/bitymi-demos/viewer/index.html?bundle=https://huggingface.co/datasets/Nilkel/bitymi-demos/resolve/main/mip_360/garden_e3rd.bitymi" target="_blank" rel="noopener">
@@ -414,18 +428,24 @@
       </a>
       <!-- E3RD:END -->
     </div>
-    <figcaption>All 13 benchmark scenes, baked with the extent-3 + rate&ndash;distortion atlas allocation and texture-finetuned (the configuration reported in the results table). Runs on WebGPU with the same texture-only renderer; sizes are the full downloadable bundle.</figcaption>
+    <figcaption>Sizes are the full download. Click a scene to open the viewer.</figcaption>
   </figure>
 
-  <h3 style="text-align:center">Side-by-side with FastGS and Nexels</h3>
-  <p>The same camera orbit rendered by all three methods. Drag the two white handles to move the
-     split. Pause and press <strong>Crop</strong>, then drag a box over the frame to zoom into it;
-     the split still works inside the zoom. Press play to zoom back out and carry on.</p>
+  <h3 style="text-align:center">Side by side with FastGS and Nexels</h3>
+  <p class="tcenter note">Drag the white handles to move the split. Pause, press <strong>Crop</strong> and drag a box to zoom.</p>
   <div class="cmp" id="cmp" tabindex="0" aria-label="Method comparison player">
     <div class="cmp-tabs" role="tablist">
       <button class="cmp-tab" role="tab" data-scene="bicycle" data-w="1236" data-h="822">Bicycle</button>
       <button class="cmp-tab" role="tab" data-scene="garden" data-w="1296" data-h="840">Garden</button>
       <button class="cmp-tab" role="tab" data-scene="bonsai" data-w="1558" data-h="1038">Bonsai</button>
+    </div>
+    <div class="cmp-stats" aria-label="Per-scene metrics">
+      <div class="cmp-stat ours" data-m="ours"><div class="m">Ours</div>
+        <dl><dt>PSNR</dt><dd></dd><dt>SSIM</dt><dd></dd><dt>LPIPS</dt><dd></dd><dt>FPS</dt><dd></dd><dt>Points</dt><dd></dd></dl></div>
+      <div class="cmp-stat" data-m="fastgs"><div class="m">FastGS</div>
+        <dl><dt>PSNR</dt><dd></dd><dt>SSIM</dt><dd></dd><dt>LPIPS</dt><dd></dd><dt>FPS</dt><dd></dd><dt>Points</dt><dd></dd></dl></div>
+      <div class="cmp-stat" data-m="nexels"><div class="m">Nexels (400K)</div>
+        <dl><dt>PSNR</dt><dd></dd><dt>SSIM</dt><dd></dd><dt>LPIPS</dt><dd></dd><dt>FPS</dt><dd></dd><dt>Points</dt><dd></dd></dl></div>
     </div>
     <div class="cmp-stage">
       <canvas aria-label="Three-way split of the selected scene"></canvas>
@@ -442,314 +462,44 @@
       <button class="cmp-btn" data-act="reset" disabled title="Zoom back out (Esc)">Reset zoom</button>
     </div>
   </div>
-  <figcaption>Left to right at the start: <strong>Ours</strong> (rendered from the baked BC7 texture
-    atlas), <strong>FastGS</strong>, <strong>Nexels (400K)</strong>. Keys when the player is focused:
-    Space plays and pauses, &larr;/&rarr; step one frame, C starts a crop, Esc zooms out. The videos are
-    H.264, so the finest detail is slightly softened by compression for every method alike.</figcaption>
+  <figcaption>FPS is the software rasterizer, with the hardware rasterizer in brackets. Keys: Space
+    plays, &larr;/&rarr; step a frame, C crops, Esc zooms out.</figcaption>
 
-  <!-- =================== RESULTS =================== -->
-  <!-- Qualitative results figures removed for now (comparison.png /
-       labeled.png from the template) -- to be redesigned. The quantitative
-       Results table below is unaffected. -->
-
-  <!-- =================== BIBTEX =================== -->
-
-  <!-- =================== RESULTS =================== -->
-  <h2>Results</h2>
-  <p>Rendering throughput and quality on three standard benchmarks, measured on a single
-     RTX&nbsp;5090. All timings use per-frame <code>cuda.Event</code> pairs (50 warmup + 400 timed
-     frames, sort and preprocess included), cycling through each scene's full held-out test set so
-     all methods are timed on identical images. We first highlight the two most relevant
-     baselines: <strong>FastGS</strong>, the fastest untextured method, which optimises the
-     per-primitive cost of a conventional splat, and <strong>Nexels (100K)</strong>, the
-     strongest textured baseline near our primitive budget. We instead change what a primitive
-     stores &mdash; moving high-frequency appearance into a baked texture, so far fewer and
-     cheaper primitives are needed. The full comparison follows below.</p>
-
-  <div class="tablewrap">
-  <table class="restable sumtable">
-    <thead>
-      <tr><th>Benchmark</th><th>Method</th><th class="n">Primitives</th><th class="n fps">FPS&nbsp;<span class="arw">&uarr;</span></th><th class="n">Our speed-up&nbsp;<span class="arw">&uarr;</span></th><th class="n">PSNR&nbsp;<span class="arw">&uarr;</span></th><th class="n">SSIM&nbsp;<span class="arw">&uarr;</span></th><th class="n">LPIPS&nbsp;<span class="arw">&darr;</span></th></tr>
-    </thead>
-    <tbody>
-      <tr class="dstop"><td rowspan="4">Mip-NeRF&nbsp;360<br><span class="dsn">9 scenes</span></td><td>FastGS</td><td class="n">394,189</td><td class="n fps">1209</td><td class="n win">1.27&times;</td><td class="n best"><strong>27.44</strong></td><td class="n best"><strong>0.7967</strong></td><td class="n">0.2589</td></tr>
-      <tr><td>Nexels (100K)</td><td class="n">99,934</td><td class="n fps">100</td><td class="n win">15.4&times;</td><td class="n">26.55</td><td class="n">0.7764</td><td class="n">0.2245</td></tr>
-      <tr class="oursep"><td><strong>Ours</strong></td><td class="n" rowspan="2">123,051</td><td class="n fps">1538</td><td class="n">&mdash;</td><td class="n" rowspan="2">27.23</td><td class="n" rowspan="2">0.7892</td><td class="n best" rowspan="2"><strong>0.2114</strong></td></tr>
-      <tr><td><span class="dsn">&nbsp;&nbsp;+ HW rasterizer</span></td><td class="n best fps"><strong>2621</strong></td><td class="n">&mdash;</td></tr>
-      <tr class="dstop"><td rowspan="4">Tanks &amp; Temples<br><span class="dsn">2 scenes</span></td><td>FastGS</td><td class="n">242,133</td><td class="n fps">1243</td><td class="n win">1.78&times;</td><td class="n">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td></tr>
-      <tr><td>Nexels (100K)</td><td class="n">99,932</td><td class="n fps">181</td><td class="n win">12.3&times;</td><td class="n">22.92</td><td class="n">0.8244</td><td class="n">0.1752</td></tr>
-      <tr class="oursep"><td><strong>Ours</strong></td><td class="n" rowspan="2">86,746</td><td class="n fps">2217</td><td class="n">&mdash;</td><td class="n best" rowspan="2"><strong>24.10</strong></td><td class="n best" rowspan="2"><strong>0.8507</strong></td><td class="n best" rowspan="2"><strong>0.1447</strong></td></tr>
-      <tr><td><span class="dsn">&nbsp;&nbsp;+ HW rasterizer</span></td><td class="n best fps"><strong>2998</strong></td><td class="n">&mdash;</td></tr>
-      <tr class="dstop"><td rowspan="4">Deep Blending<br><span class="dsn">2 scenes</span></td><td>FastGS</td><td class="n">216,748</td><td class="n fps">1451</td><td class="n win">1.39&times;</td><td class="n best"><strong>30.02</strong></td><td class="n">0.9045</td><td class="n">0.2651</td></tr>
-      <tr><td>Nexels (100K)</td><td class="n">99,843</td><td class="n fps">86</td><td class="n win">23.4&times;</td><td class="n">30.00</td><td class="n best"><strong>0.9075</strong></td><td class="n best"><strong>0.2097</strong></td></tr>
-      <tr class="oursep"><td><strong>Ours</strong></td><td class="n" rowspan="2">66,622</td><td class="n fps">2014</td><td class="n">&mdash;</td><td class="n" rowspan="2">29.87</td><td class="n" rowspan="2">0.8902</td><td class="n" rowspan="2">0.2176</td></tr>
-      <tr><td><span class="dsn">&nbsp;&nbsp;+ HW rasterizer</span></td><td class="n best fps"><strong>4347</strong></td><td class="n">&mdash;</td></tr>
-    </tbody>
-  </table>
+  <h2 id="results">Results</h2>
+  <p class="tcenter note">Every method trained and timed by us on one RTX&nbsp;5090 with its released code;
+    quality from one shared evaluation script. Hover a point for its numbers.</p>
+  <div class="ctrl">
+    <div class="seg" id="bench">
+      <button data-b="mean" aria-pressed="true">Mean of 3</button><button data-b="mip">Mip-NeRF 360</button><button data-b="tt">Tanks &amp; Temples</button><button data-b="db">Deep Blending</button>
+    </div>
+    <div class="seg" id="metric">
+      <button data-m="lpips" aria-pressed="true">LPIPS</button><button data-m="psnr">PSNR</button><button data-m="ssim">SSIM</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="hwtog" checked> hardware rasterizer</label>
+    <label class="chk"><input type="checkbox" id="logtog"> log FPS</label>
   </div>
+  <div class="chart" id="chart"><svg id="chartsvg" viewBox="0 0 860 500" role="img" aria-label="Quality against frame rate"></svg><div class="tip" id="tip"></div></div>
+  <div class="legend" id="legend"></div>
+  <p class="tnote">Filled markers use each method's own software renderer. Hollow markers joined by a
+    dashed line are the same model on a GPU hardware rasterizer: ours and Compressed 3DGS on their own,
+    FastGS and Speedy-Splat through our Vulkan port. The shaded area is dominated by the frontier.</p>
 
-  <h3>Full comparison: one GPU, one eval script</h3>
-  <p>Every baseline below is retrained and re-benchmarked by us on the same RTX&nbsp;5090, with
-     quality recomputed from the saved renders by one shared evaluation script &mdash; no numbers
-     are copied from other papers. We are the <strong>fastest method on all three
-     benchmarks</strong>; among methods above 1000&nbsp;FPS we have the best LPIPS on every
-     benchmark mean and on 12 of 13 scenes. Red, orange and yellow tints
-     mark the best, second and third value in each quality and speed column (Primitives and Size
-     are context, not ranked; see the note below).</p>
-
-  <figure>
-    <img src="static/images/pareto.png" alt="LPIPS versus FPS on Mip-NeRF 360, Tanks and Temples and Deep Blending: our method sits alone at the fast end of the Pareto frontier on all three benchmarks">
-    <figcaption>LPIPS vs FPS (LPIPS decreases upward, so the best corner is top right) for
-      every method in the comparison plus variants. Solid red links are our quality/speed ladder
-      (HQ &rarr; no reg &rarr; production); dashed links connect each configuration to the
-      identical bake on the GPU&#39;s fixed-function rasterizer (hollow stars, measured
-      quality parity). The frontier ends at our hardware points on every benchmark; on
-      Tanks&nbsp;&amp;&nbsp;Temples it is entirely ours.</figcaption>
-  </figure>
-
-  <figure>
-    <img src="static/images/pareto_psnr.png" alt="PSNR versus FPS on the three benchmarks with the same methods, variants and hardware twins" loading="lazy">
-    <figcaption>The same comparison on PSNR (higher is better, axis at the bottom).
-      Beta-Splatting anchors Mip-NeRF&nbsp;360 and Tanks&nbsp;&amp;&nbsp;Temples and
-      Nexels-400K and FastGS&nbsp;(Big) hold slow steps on Deep Blending, but the fast end of
-      every frontier is our hardware points.</figcaption>
-  </figure>
-
-  <figure>
-    <img src="static/images/pareto_ssim.png" alt="SSIM versus FPS on the three benchmarks with the same methods, variants and hardware twins" loading="lazy">
-    <figcaption>And on SSIM, our weakest metric: dense baselines and FastGS&nbsp;(Big) hold more
-      of the slow end, while the fastest frontier points remain ours on all three
-      benchmarks.</figcaption>
-  </figure>
-
-  <p class="tcenter"><button class="toggle" type="button" data-target="pareto-all"
-     aria-expanded="false">Show every method in the plot</button></p>
-  <div id="pareto-all" hidden>
-  <figure>
-    <img src="static/images/pareto_all_linear.png" alt="LPIPS versus FPS on a linear frame-rate axis with all eleven evaluated methods, showing most methods compressed against the left edge">
-    <figcaption>Every configuration from the table below on a <strong>linear</strong> frame-rate
-      axis: eleven methods plus five variants per benchmark. Eleven of the sixteen points fall
-      below 500&nbsp;FPS and pile up against the left edge, which is the size of the gap in
-      absolute terms.</figcaption>
-  </figure>
-  <figure>
-    <img src="static/images/pareto_all.png" alt="The same all-methods comparison on a logarithmic frame-rate axis, which separates the slower methods">
-    <figcaption>The same data on a <strong>log</strong> frame-rate axis, which spreads the slow
-      cluster out so the baselines can be told apart. Hollow markers are variants of the filled
-      marker they connect to.</figcaption>
-  </figure>
+  <div class="tablewrap" style="margin-top:1rem">
+    <table class="restable" id="restab"></table>
   </div>
+  <p class="tnote">Best, second and third per column are tinted. MB is the stored model in each method's
+    own format. HW is the hardware-rasterizer frame rate at quality parity.</p>
 
-  <div class="fullcmp">
-  <h4>Mip-NeRF&nbsp;360 <span class="dsn">(9 scenes)</span></h4>
-  <div class="tablewrap">
-  <table class="restable">
-    <thead>
-      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n fps">FPS <span class="arw">&uarr;</span></th></tr>
-    </thead>
-    <tbody>
-      <tr><td>3DGS</td><td class="n">27.54</td><td class="n r3">0.8190</td><td class="n">0.2149</td><td class="n">2,732,349</td><td class="n">646</td><td class="n fps">211</td></tr>
-      <tr><td>2DGS</td><td class="n">26.83</td><td class="n">0.7989</td><td class="n">0.2520</td><td class="n">2,128,093</td><td class="n">495</td><td class="n fps">131</td></tr>
-      <tr><td>Beta-Splatting</td><td class="n r1"><strong>28.07</strong></td><td class="n r1"><strong>0.8311</strong></td><td class="n r1"><strong>0.1904</strong></td><td class="n">3,111,111</td><td class="n">356</td><td class="n fps">110</td></tr>
-      <tr><td>Beta-Splatting (200K)</td><td class="n">26.66</td><td class="n">0.7725</td><td class="n">0.2942</td><td class="n">205,331</td><td class="n">23</td><td class="n fps">469</td></tr>
-      <tr><td>BBSplat</td><td class="n">26.80</td><td class="n">0.7874</td><td class="n">0.2355</td><td class="n">237,778</td><td class="n">176</td><td class="n fps">48</td></tr>
-      <tr><td>Nexels (40K)</td><td class="n">25.99</td><td class="n">0.7619</td><td class="n">0.2411</td><td class="n">39,977</td><td class="n">138</td><td class="n fps">119</td></tr>
-      <tr><td>Nexels (100K)</td><td class="n">26.55</td><td class="n">0.7764</td><td class="n">0.2245</td><td class="n">99,934</td><td class="n">282</td><td class="n fps">100</td></tr>
-      <tr><td>Nexels (400K)</td><td class="n">27.21</td><td class="n">0.8018</td><td class="n">0.2057</td><td class="n">399,771</td><td class="n">230</td><td class="n fps">78</td></tr>
-      <tr><td>Speedy-Splat</td><td class="n">26.91</td><td class="n">0.7883</td><td class="n">0.2875</td><td class="n">315,961</td><td class="n">75</td><td class="n r3 fps">1259</td></tr>
-      <tr><td>FastGS</td><td class="n">27.44</td><td class="n">0.7967</td><td class="n">0.2589</td><td class="n">394,189</td><td class="n">98</td><td class="n fps">1209</td></tr>
-      <tr><td>FastGS (Big)</td><td class="n r3">27.80</td><td class="n r2">0.8191</td><td class="n">0.2160</td><td class="n">1,161,438</td><td class="n">&mdash;</td><td class="n fps">890</td></tr>
-      <tr><td>Content-Aware Texturing</td><td class="n">26.84</td><td class="n">0.7886</td><td class="n">0.2340</td><td class="n">155,756</td><td class="n">436</td><td class="n fps">137</td></tr>
-      <tr><td>Textured Gaussians</td><td class="n">25.86</td><td class="n">0.7336</td><td class="n">0.2857</td><td class="n">100,000</td><td class="n">3,837</td><td class="n fps">28</td></tr>
-      <tr><td>NeST</td><td class="n">26.39</td><td class="n">0.7734</td><td class="n">0.2257</td><td class="n">961,163</td><td class="n">224</td><td class="n fps">24</td></tr>
-      <tr class="ours"><td>Ours (HQ)</td><td class="n r2">27.88</td><td class="n">0.8070</td><td class="n r2">0.1981</td><td class="n">248,341</td><td class="n">839</td><td class="n fps">706</td></tr>
-      <tr class="ours"><td>Ours (no reg)</td><td class="n">27.65</td><td class="n">0.8015</td><td class="n r3">0.2048</td><td class="n">168,017</td><td class="n">596</td><td class="n fps">962</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n" rowspan="2">27.23</td><td class="n" rowspan="2">0.7892</td><td class="n" rowspan="2">0.2114</td><td class="n" rowspan="2">123,051</td><td class="n" rowspan="2">445</td><td class="n r2 fps">1538</td></tr>
-      <tr class="ours"><td><span class="dsn">&nbsp;&nbsp;+ HW rasterizer</span></td><td class="n r1 fps"><strong>2621</strong></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h4>Tanks &amp; Temples <span class="dsn">(2 scenes)</span></h4>
-  <div class="tablewrap">
-  <table class="restable">
-    <thead>
-      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n fps">FPS <span class="arw">&uarr;</span></th></tr>
-    </thead>
-    <tbody>
-      <tr><td>3DGS</td><td class="n">23.74</td><td class="n">0.8574</td><td class="n">0.1692</td><td class="n">1,574,592</td><td class="n">372</td><td class="n fps">259</td></tr>
-      <tr><td>2DGS</td><td class="n">23.15</td><td class="n">0.8367</td><td class="n">0.2118</td><td class="n">851,362</td><td class="n">198</td><td class="n fps">230</td></tr>
-      <tr><td>Beta-Splatting</td><td class="n r1"><strong>24.71</strong></td><td class="n r1"><strong>0.8735</strong></td><td class="n r3">0.1434</td><td class="n">1,750,000</td><td class="n">200</td><td class="n fps">190</td></tr>
-      <tr><td>Beta-Splatting (200K)</td><td class="n">23.38</td><td class="n">0.8348</td><td class="n">0.2144</td><td class="n">200,000</td><td class="n">23</td><td class="n fps">524</td></tr>
-      <tr><td>BBSplat</td><td class="n">23.70</td><td class="n">0.8570</td><td class="n">0.1501</td><td class="n">300,000</td><td class="n">226</td><td class="n fps">80</td></tr>
-      <tr><td>Nexels (40K)</td><td class="n">22.25</td><td class="n">0.7942</td><td class="n">0.2113</td><td class="n">39,979</td><td class="n">138</td><td class="n fps">204</td></tr>
-      <tr><td>Nexels (100K)</td><td class="n">22.92</td><td class="n">0.8244</td><td class="n">0.1752</td><td class="n">99,932</td><td class="n">282</td><td class="n fps">181</td></tr>
-      <tr><td>Nexels (400K)</td><td class="n">23.62</td><td class="n">0.8449</td><td class="n">0.1576</td><td class="n">399,767</td><td class="n">230</td><td class="n fps">137</td></tr>
-      <tr><td>Speedy-Splat</td><td class="n">23.44</td><td class="n">0.8252</td><td class="n">0.2399</td><td class="n">181,817</td><td class="n">43</td><td class="n fps">1459</td></tr>
-      <tr><td>FastGS</td><td class="n">24.00</td><td class="n">0.8404</td><td class="n">0.2093</td><td class="n">242,133</td><td class="n">60</td><td class="n fps">1243</td></tr>
-      <tr><td>FastGS (Big)</td><td class="n r3">24.36</td><td class="n">0.8572</td><td class="n">0.1758</td><td class="n">543,997</td><td class="n">&mdash;</td><td class="n fps">959</td></tr>
-      <tr><td>Content-Aware Texturing</td><td class="n">23.37</td><td class="n">0.8387</td><td class="n">0.1973</td><td class="n">133,880</td><td class="n">127</td><td class="n fps">270</td></tr>
-      <tr><td>Textured Gaussians</td><td class="n">22.70</td><td class="n">0.8058</td><td class="n">0.2161</td><td class="n">100,000</td><td class="n">3,837</td><td class="n fps">30</td></tr>
-      <tr><td>NeST</td><td class="n">22.54</td><td class="n">0.8178</td><td class="n">0.1866</td><td class="n">378,448</td><td class="n">90</td><td class="n fps">48</td></tr>
-      <tr class="ours"><td>Ours (HQ)</td><td class="n r2">24.50</td><td class="n r2">0.8598</td><td class="n r1"><strong>0.1392</strong></td><td class="n">149,681</td><td class="n">539</td><td class="n fps">1161</td></tr>
-      <tr class="ours"><td>Ours (no reg)</td><td class="n r3">24.36</td><td class="n r3">0.8578</td><td class="n r2">0.1415</td><td class="n">107,428</td><td class="n">397</td><td class="n r3 fps">1524</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n" rowspan="2">24.10</td><td class="n" rowspan="2">0.8507</td><td class="n" rowspan="2">0.1447</td><td class="n" rowspan="2">86,746</td><td class="n" rowspan="2">325</td><td class="n r2 fps">2217</td></tr>
-      <tr class="ours"><td><span class="dsn">&nbsp;&nbsp;+ HW rasterizer</span></td><td class="n r1 fps"><strong>2998</strong></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h4>Deep Blending <span class="dsn">(2 scenes)</span></h4>
-  <div class="tablewrap">
-  <table class="restable">
-    <thead>
-      <tr><th>Method</th><th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th><th class="n">Prims</th><th class="n">Size (MB)</th><th class="n fps">FPS <span class="arw">&uarr;</span></th></tr>
-    </thead>
-    <tbody>
-      <tr><td>3DGS</td><td class="n">29.71</td><td class="n">0.9106</td><td class="n">0.2375</td><td class="n">2,471,124</td><td class="n">584</td><td class="n fps">216</td></tr>
-      <tr><td>2DGS</td><td class="n">29.47</td><td class="n">0.9071</td><td class="n">0.2566</td><td class="n">1,508,720</td><td class="n">351</td><td class="n fps">157</td></tr>
-      <tr><td>Beta-Splatting</td><td class="n">29.44</td><td class="n">0.9090</td><td class="n">0.2372</td><td class="n">3,000,000</td><td class="n">343</td><td class="n fps">136</td></tr>
-      <tr><td>Beta-Splatting (200K)</td><td class="n">29.64</td><td class="n">0.9024</td><td class="n">0.2756</td><td class="n">200,000</td><td class="n">23</td><td class="n fps">520</td></tr>
-      <tr><td>BBSplat</td><td class="n">29.34</td><td class="n">0.9050</td><td class="n">0.2570</td><td class="n">160,000</td><td class="n">111</td><td class="n fps">49</td></tr>
-      <tr><td>Nexels (40K)</td><td class="n">29.34</td><td class="n">0.8981</td><td class="n">0.2306</td><td class="n">39,958</td><td class="n">138</td><td class="n fps">106</td></tr>
-      <tr><td>Nexels (100K)</td><td class="n">30.00</td><td class="n">0.9075</td><td class="n r3">0.2097</td><td class="n">99,843</td><td class="n">282</td><td class="n fps">86</td></tr>
-      <tr><td>Nexels (400K)</td><td class="n r1"><strong>30.41</strong></td><td class="n r2">0.9138</td><td class="n r1"><strong>0.2046</strong></td><td class="n">399,188</td><td class="n">230</td><td class="n fps">56</td></tr>
-      <tr><td>Speedy-Splat</td><td class="n">29.62</td><td class="n">0.9074</td><td class="n">0.2678</td><td class="n">250,990</td><td class="n">59</td><td class="n r3 fps">1501</td></tr>
-      <tr><td>FastGS</td><td class="n">30.02</td><td class="n">0.9045</td><td class="n">0.2651</td><td class="n">216,748</td><td class="n">54</td><td class="n fps">1451</td></tr>
-      <tr><td>FastGS (Big)</td><td class="n r2">30.31</td><td class="n r3">0.9115</td><td class="n">0.2437</td><td class="n">649,603</td><td class="n">&mdash;</td><td class="n fps">1276</td></tr>
-      <tr><td>Content-Aware Texturing</td><td class="n">29.99</td><td class="n r1"><strong>0.9141</strong></td><td class="n">0.2410</td><td class="n">185,094</td><td class="n">252</td><td class="n fps">147</td></tr>
-      <tr><td>Textured Gaussians</td><td class="n">29.04</td><td class="n">0.8913</td><td class="n">0.2652</td><td class="n">100,000</td><td class="n">3,837</td><td class="n fps">30</td></tr>
-      <tr><td>NeST</td><td class="n">28.86</td><td class="n">0.9021</td><td class="n">0.2273</td><td class="n">478,000</td><td class="n">113</td><td class="n fps">38</td></tr>
-      <tr class="ours"><td>Ours (HQ)</td><td class="n r3">30.28</td><td class="n">0.9000</td><td class="n r2">0.2095</td><td class="n">133,095</td><td class="n">498</td><td class="n fps">961</td></tr>
-      <tr class="ours"><td>Ours (no reg)</td><td class="n">30.25</td><td class="n">0.9008</td><td class="n">0.2117</td><td class="n">93,813</td><td class="n">366</td><td class="n fps">1237</td></tr>
-      <tr class="ours"><td><strong>Ours</strong></td><td class="n" rowspan="2">29.87</td><td class="n" rowspan="2">0.8902</td><td class="n" rowspan="2">0.2176</td><td class="n" rowspan="2">66,622</td><td class="n" rowspan="2">259</td><td class="n r2 fps">2014</td></tr>
-      <tr class="ours"><td><span class="dsn">&nbsp;&nbsp;+ HW rasterizer</span></td><td class="n r1 fps"><strong>4347</strong></td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <p class="tnote">
-    <em>Size</em> is the payload as each method stores it, so the column mixes compressed and
-    uncompressed formats: our atlas ships BC7-compressed, while Content-Aware Texturing and
-    Textured Gaussians store fp32 textures with no compressed variant in their pipelines.
-    Beta-Splatting (200K) and Nexels (40K/100K) are those papers' own reduced primitive budgets,
-    closest to our primitive count. NeST is run as its released baseline method.
-    <em>FastGS (Big)</em> is FastGS's own <code>train_big.sh</code> recipe, its
-    higher-quality/slower configuration; size is unrecorded because those checkpoints were not
-    packaged for deployment.
-    <em>Ours (no reg)</em> and <em>Ours (HQ)</em> ablate our two speed-critical design choices,
-    each retrained, baked and finetuned identically. They form a ladder rather than independent
-    knobs: the falloff regulariser acts on the Beta shape parameter, so the Gaussian variant (HQ)
-    is necessarily unregularised. Adopting the compact Beta kernel is worth
-    1.3&ndash;1.4&times; the frame rate, switching the regulariser on a further
-    1.5&ndash;1.6&times;, and together 1.9&ndash;2.2&times;, for a combined
-    0.4&ndash;0.7&nbsp;dB of PSNR. Both steps shrink the model (248K primitives, then 168K, then
-    123K on Mip-NeRF&nbsp;360), and neither alternative keeps the throughput lead: at 962 and
-    706&nbsp;FPS they fall below FastGS and FastGS&nbsp;(Big).
-  </p>
-  <p class="tnote">
-    <em>+ HW rasterizer</em> rows draw the identical production bake with the GPU&#39;s
-    fixed-function rasterizer and ROP blending (a Vulkan port of our renderer; Vulkan GPU
-    timestamps, same 400-frame protocol). Quality parity is measured (&le;0.001 LPIPS across
-    all 13 scenes), so only speed changes. The same port helps dense baselines far less
-    &mdash; 1.28&times; for both 3DGS and FastGS on garden, whose frames are dominated by
-    sorting millions of primitives &mdash; while our ~100K-primitive scenes gain
-    1.7&times;: sparsity and compact kernels are what the hardware path rewards. On this
-    path texturing costs only 3.9&ndash;8.6% of the frame, and our no-reg and HQ variants
-    reach 1723&ndash;2945 and 1172&ndash;1932 FPS (dashed links in the figure).
-  </p>
-  </div>
-
-  <p class="tcenter"><button class="toggle" type="button" data-target="ps-all"
-     aria-expanded="false">Show our per-scene results</button></p>
-  <div id="ps-all" hidden>
-  <h4>Mip-NeRF&nbsp;360</h4>
-  <div class="tablewrap perscene">
-  <table class="restable">
-    <thead>
-      <tr><th>Scene</th><th class="n">Resolution</th>
-          <th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th>
-          <th class="n">Prims</th><th class="n">Size (MB)</th><th class="n fps">FPS <span class="arw">&uarr;</span></th><th class="n fps">FPS (HW) <span class="arw">&uarr;</span></th></tr>
-    </thead>
-    <tbody>
-      <tr><td>bicycle</td><td class="n">1237&times;822</td><td class="n">24.41</td><td class="n">0.7132</td><td class="n">0.2383</td><td class="n">160,097</td><td class="n">620</td><td class="n fps">1520</td><td class="n fps">2860</td></tr>
-      <tr><td>bonsai</td><td class="n">1559&times;1039</td><td class="n">32.53</td><td class="n">0.9364</td><td class="n">0.1669</td><td class="n">92,281</td><td class="n">286</td><td class="n fps">1330</td><td class="n fps">2595</td></tr>
-      <tr><td>counter</td><td class="n">1558&times;1038</td><td class="n">29.29</td><td class="n">0.8994</td><td class="n">0.1819</td><td class="n">68,394</td><td class="n">208</td><td class="n fps">1594</td><td class="n fps">2232</td></tr>
-      <tr><td>flowers</td><td class="n">1256&times;828</td><td class="n">20.78</td><td class="n">0.5581</td><td class="n">0.3202</td><td class="n">184,511</td><td class="n">728</td><td class="n fps">1301</td><td class="n fps">2262</td></tr>
-      <tr><td>garden</td><td class="n">1297&times;840</td><td class="n">27.02</td><td class="n">0.8373</td><td class="n">0.1288</td><td class="n">148,658</td><td class="n">576</td><td class="n fps">1954</td><td class="n fps">2761</td></tr>
-      <tr><td>kitchen</td><td class="n">1558&times;1039</td><td class="n">31.39</td><td class="n">0.9181</td><td class="n">0.1224</td><td class="n">119,462</td><td class="n">253</td><td class="n fps">1384</td><td class="n fps">1721</td></tr>
-      <tr><td>room</td><td class="n">1557&times;1038</td><td class="n">31.48</td><td class="n">0.9164</td><td class="n">0.1866</td><td class="n">62,947</td><td class="n">228</td><td class="n fps">2007</td><td class="n fps">3393</td></tr>
-      <tr><td>stump</td><td class="n">1245&times;825</td><td class="n">25.66</td><td class="n">0.7225</td><td class="n">0.2632</td><td class="n">96,365</td><td class="n">378</td><td class="n fps">1433</td><td class="n fps">3277</td></tr>
-      <tr><td>treehill</td><td class="n">1267&times;832</td><td class="n">22.55</td><td class="n">0.6015</td><td class="n">0.2939</td><td class="n">174,744</td><td class="n">727</td><td class="n fps">1320</td><td class="n fps">2486</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <h4>Tanks &amp; Temples</h4>
-  <div class="tablewrap perscene">
-  <table class="restable">
-    <thead>
-      <tr><th>Scene</th><th class="n">Resolution</th>
-          <th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th>
-          <th class="n">Prims</th><th class="n">Size (MB)</th><th class="n fps">FPS <span class="arw">&uarr;</span></th><th class="n fps">FPS (HW) <span class="arw">&uarr;</span></th></tr>
-    </thead>
-    <tbody>
-      <tr><td>truck</td><td class="n">979&times;546</td><td class="n">25.61</td><td class="n">0.8781</td><td class="n">0.1169</td><td class="n">85,413</td><td class="n">326</td><td class="n fps">2399</td><td class="n fps">3249</td></tr>
-      <tr><td>train</td><td class="n">980&times;545</td><td class="n">22.59</td><td class="n">0.8233</td><td class="n">0.1724</td><td class="n">88,080</td><td class="n">324</td><td class="n fps">2035</td><td class="n fps">2747</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <h4>Deep Blending</h4>
-  <div class="tablewrap perscene">
-  <table class="restable">
-    <thead>
-      <tr><th>Scene</th><th class="n">Resolution</th>
-          <th class="n">PSNR <span class="arw">&uarr;</span></th><th class="n">SSIM <span class="arw">&uarr;</span></th><th class="n">LPIPS <span class="arw">&darr;</span></th>
-          <th class="n">Prims</th><th class="n">Size (MB)</th><th class="n fps">FPS <span class="arw">&uarr;</span></th><th class="n fps">FPS (HW) <span class="arw">&uarr;</span></th></tr>
-    </thead>
-    <tbody>
-      <tr><td>playroom</td><td class="n">1264&times;832</td><td class="n">30.24</td><td class="n">0.8907</td><td class="n">0.2051</td><td class="n">67,156</td><td class="n">270</td><td class="n fps">1853</td><td class="n fps">4380</td></tr>
-      <tr><td>drjohnson</td><td class="n">1332&times;876</td><td class="n">29.50</td><td class="n">0.8898</td><td class="n">0.2302</td><td class="n">66,087</td><td class="n">247</td><td class="n fps">2175</td><td class="n fps">4314</td></tr>
-    </tbody>
-  </table>
-  </div>
-  </div>
-
-  <p class="tnote">
-    Our method carries <strong>~3&times; fewer primitives</strong> than FastGS on every benchmark
-    (over 10&times; fewer than 3DGS) and is <strong>7&ndash;9&times; faster than 3DGS</strong> on
-    the benchmark means, up to 13&times; on garden. FastGS holds a small PSNR edge on
-    Mip-NeRF&nbsp;360 (&minus;0.21&nbsp;dB) and Deep Blending (&minus;0.15&nbsp;dB) and we lead on
-    Tanks&nbsp;&amp;&nbsp;Temples (+0.10&nbsp;dB), while <strong>LPIPS favours us on all 13
-    scenes</strong> &mdash; the explicit texture holds high-frequency detail that a per-primitive
-    colour model cannot. Nexels (400K), the strongest textured baseline, edges our LPIPS on
-    Mip-NeRF&nbsp;360 and Deep Blending but renders 16&ndash;36&times; slower and trails us on
-    Tanks&nbsp;&amp;&nbsp;Temples. FastGS's own high-quality recipe, FastGS&nbsp;(Big), closes much
-    of the LPIPS gap and still trails us on every benchmark mean, at 1.6&ndash;2.3&times; our
-    primitive count and 0.6&ndash;0.8&times; our frame rate.
-  </p>
-  <p class="tnote">
-    <em>Texture finetune.</em> The baked atlas is initialised from the trained neural residual and
-    then finetuned against the training images for a short schedule, with geometry and
-    view-dependent colour frozen so only the texels move. Baking alone can only lose information
-    relative to its teacher; optimising the texels directly recovers it and then exceeds it, worth
-    <strong>+0.49&nbsp;dB</strong> and <strong>&minus;0.037 LPIPS</strong> on average over the raw
-    bake at identical primitive count, storage and frame rate.
-  </p>
-  <p class="tnote">
-    <em>Protocol.</em> FastGS checkpoints were trained with its own released script
-    (<code>train_base.sh</code>), which loads images at the 3DGS default (long edge capped at
-    1600&nbsp;px). On Mip-NeRF&nbsp;360 we render them at the standard evaluation resolution
-    (<code>images_4</code> outdoors, <code>images_2</code> indoors) so both methods are measured on
-    identical images; retraining FastGS at that resolution changes its primitive count by
-    &minus;8&nbsp;% and its throughput by &lt;3&nbsp;%. On Tanks&nbsp;&amp;&nbsp;Temples and Deep
-    Blending both methods already use the same native resolution. FastGS runs at its own released
-    default (<code>mult&nbsp;=&nbsp;0.5</code>); at <code>mult&nbsp;=&nbsp;1.0</code> it gains
-    ~0.2&nbsp;dB PSNR and loses ~11&nbsp;% throughput, with LPIPS essentially unchanged.
-  </p>
+  <h3>Hardware rasterization</h3>
+  <p>Rendering needs only one texture fetch per fragment, so our bakes also run through the GPU's
+    fixed-function pipeline: 1.8&times; faster than our CUDA renderer on average, at quality parity. The
+    baselines gain less from the same path, 1.4&times; for FastGS and 1.7&times; for Speedy-Splat, because
+    sorting millions of primitives dominates their frame. On matched hardware rasterizers we stay
+    1.7&times; faster than FastGS and 1.3&times; faster than Speedy-Splat.</p>
 
   <h2>BibTeX</h2>
   <pre><code>@article{kelkar2026bake,
-  title   = {Bake It Till You Make It: Ultrafast Spatial Texture-Surfel Splatting},
+  title   = {Bake It Till You Make It: Ultrafast Spatial Texture Atlas Splatting},
   author  = {Kelkar, Neel and Niedermayr, Simon and Petkov, Kaloian and
              Engel, Klaus and Westermann, R{\"u}diger},
   journal = {arXiv preprint arXiv:2607.13808},
@@ -759,30 +509,8 @@
 </main>
 
 <footer>
-  <div class="wrap">
-    <!-- EDIT acknowledgments / template credit as you like -->
-    <p>Website template is free to reuse. Built as a single self-contained HTML file.</p>
-    <p>&copy; 2026 The Authors.</p>
-  </div>
+  <div class="wrap"><p>&copy; 2026 The Authors.</p></div>
 </footer>
-
-
-<script>
-  // Collapsible sections (per-scene tables, dense plot). Each button keeps its
-  // own wording: the markup carries the "Show ..." label, and "Hide" is swapped
-  // in for the open state, so one handler serves any number of toggles.
-  document.querySelectorAll('.toggle').forEach(function (b) {
-    var showText = b.textContent.trim();
-    var hideText = showText.replace(/^Show\b/, 'Hide');
-    b.addEventListener('click', function () {
-      var t = document.getElementById(b.dataset.target);
-      var open = t.hasAttribute('hidden');
-      if (open) { t.removeAttribute('hidden'); } else { t.setAttribute('hidden', ''); }
-      b.setAttribute('aria-expanded', String(open));
-      b.textContent = open ? hideText : showText;
-    });
-  });
-</script>
 
 <script>
 /* Method comparison player. Each scene is ONE video whose frame is a 2x2 grid:
@@ -1039,6 +767,232 @@
   }, { rootMargin: '200px' }).observe(stage);
   loadScene(tabs[0]);
   requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* Metrics above the comparison player, per scene. Ours and FastGS carry the
+   hardware-rasterizer frame rate in brackets. */
+(function () {
+  var root = document.getElementById('cmp'); if (!root) return;
+  var M = {
+    bicycle: { ours:   ['24.43', '0.715', '0.232', '1479', '2988', '0.16M'],
+               fastgs: ['24.61', '0.724', '0.287', '1212', '1535', '0.54M'],
+               nexels: ['24.74', '0.732', '0.227', '91',   null,   '0.40M'] },
+    garden:  { ours:   ['27.06', '0.841', '0.125', '1933', '2842', '0.15M'],
+               fastgs: ['27.32', '0.848', '0.157', '1146', '1461', '0.66M'],
+               nexels: ['26.96', '0.843', '0.124', '96',   null,   '0.40M'] },
+    bonsai:  { ours:   ['32.69', '0.940', '0.170', '1288', '2650', '0.09M'],
+               fastgs: ['32.05', '0.937', '0.214', '1229', '1558', '0.28M'],
+               nexels: ['31.30', '0.924', '0.190', '51',   null,   '0.40M'] }
+  };
+  var rows = root.querySelectorAll('.cmp-stat');
+  function fill(scene) {
+    var d = M[scene]; if (!d) return;
+    rows.forEach(function (tr) {
+      var v = d[tr.dataset.m], dd = tr.querySelectorAll('dd');
+      dd[0].textContent = v[0]; dd[1].textContent = v[1]; dd[2].textContent = v[2];
+      dd[3].innerHTML = v[3] + (v[4] ? ' <span class="hw">(' + v[4] + ' HW)</span>' : '');
+      dd[4].textContent = v[5];
+    });
+  }
+  var tabs = root.querySelectorAll('.cmp-tab');
+  tabs.forEach(function (t) { t.addEventListener('click', function () { fill(t.dataset.scene); }); });
+  var sel = root.querySelector('.cmp-tab[aria-selected="true"]') || tabs[0];
+  fill(sel.dataset.scene);
+})();
+</script>
+<script>
+/* Warn before a visitor clicks into a viewer that cannot run. */
+(async () => {
+  let why = null;
+  if (!('gpu' in navigator)) why = 'This browser has no WebGPU, so the interactive demos will not run. Use Chrome or Edge 113+, or Safari 18+. The comparison player below works everywhere.';
+  else { try { if (!(await navigator.gpu.requestAdapter())) why = 'WebGPU is present but no GPU adapter was offered, so the interactive demos will not run. The comparison player below works everywhere.'; }
+         catch (e) { why = 'WebGPU could not start (' + e.message + '), so the interactive demos will not run.'; } }
+  if (!why) return;
+  const n = document.createElement('p');
+  n.className = 'req'; n.style.color = '#c0563c'; n.textContent = why;
+  const g = document.querySelector('.demogrid');
+  g.parentNode.insertBefore(n, g);
+})();
+</script>
+
+<script>
+/* Interactive results: Table 1 of the paper as data. Per benchmark:
+   [PSNR, SSIM, LPIPS, points (M), MB, FPS, HW FPS or null]. */
+(function () {
+  var D = [
+    ['3DGS', 'dense', '#8c564b', {tt:[23.74,.857,.169,1.57,372,259], mip:[27.54,.819,.215,2.73,646,211], db:[29.71,.911,.238,2.47,584,216]}],
+    ['2DGS', 'dense', '#e377c2', {tt:[23.15,.837,.212,.85,198,230], mip:[26.83,.799,.252,2.13,495,131], db:[29.47,.907,.257,1.51,351,157]}],
+    ['Beta-Splatting', 'dense', '#1f77b4', {tt:[24.71,.874,.143,1.75,200,190], mip:[28.07,.831,.190,3.11,356,110], db:[29.44,.909,.237,3.00,343,136]}],
+    ['Beta-Splatting (200K)', 'dense', '#6fa8dc', {tt:[23.38,.835,.214,.20,23,524], mip:[26.66,.773,.294,.21,23,469], db:[29.64,.902,.276,.20,23,520]}],
+    ['Compressed 3DGS', 'dense', '#7f7f7f', {tt:[23.65,.845,.182,1.53,19,197,1182], mip:[27.11,.805,.234,2.67,28,185,984], db:[29.66,.905,.246,2.39,25,189,1172]}],
+    ['BBSplat', 'tex', '#98df8a', {tt:[23.70,.857,.150,.30,226,80], mip:[26.80,.787,.236,.24,176,48], db:[29.34,.905,.257,.16,111,49]}],
+    ['Nexels (40K)', 'tex', '#9edae5', {tt:[22.25,.794,.211,.04,138,204], mip:[25.99,.762,.241,.04,138,119], db:[29.34,.898,.231,.04,138,106]}],
+    ['Nexels (400K)', 'tex', '#2ca02c', {tt:[23.62,.845,.158,.40,230,137], mip:[27.27,.803,.203,.40,230,78], db:[30.41,.914,.205,.40,230,56]}],
+    ['Content-Aware Tex.', 'tex', '#bcbd22', {tt:[23.37,.839,.197,.13,127,270], mip:[26.84,.789,.234,.16,436,137], db:[29.99,.914,.241,.19,252,147]}],
+    ['Textured Gaussians', 'tex', '#dbdb8d', {tt:[22.70,.806,.216,.10,3837,30], mip:[25.86,.734,.286,.10,3837,28], db:[29.04,.891,.265,.10,3837,30]}],
+    ['NeST-Splatting', 'tex', '#c5b0d5', {tt:[22.54,.818,.187,.38,90,71], mip:[26.39,.773,.226,.96,224,39], db:[28.86,.902,.227,.48,113,60]}],
+    ['Speedy-Splat', 'fast', '#9467bd', {tt:[23.44,.825,.240,.18,43,1459,2842], mip:[26.91,.788,.288,.32,75,1259,1948], db:[29.62,.907,.268,.25,59,1501,2996]}],
+    ['FastGS', 'fast', '#ff7f0e', {tt:[24.00,.840,.209,.24,60,1243,2102], mip:[27.44,.797,.259,.39,98,1209,1480], db:[30.02,.905,.265,.22,54,1451,2929]}],
+    ['FastGS (Big)', 'fast', '#ffbb78', {tt:[24.36,.857,.176,.54,135,959], mip:[27.80,.819,.216,1.16,288,890], db:[30.31,.912,.244,.65,161,1276]}],
+    ['Ours (HQ)', 'ours', '#f28b82', {tt:[24.51,.861,.135,.15,347,1136,1509], mip:[27.92,.810,.194,.25,494,684,1181], db:[30.33,.903,.210,.13,256,930,2053]}],
+    ['Ours', 'ours', '#d62728', {tt:[24.10,.853,.141,.09,171,2184,3016], mip:[27.31,.793,.208,.12,228,1504,2698], db:[30.06,.898,.220,.07,104,1970,4413]}]
+  ];
+  // "Mean of 3": plain average of the three benchmark means, as in the teaser
+  D.forEach(function (m) {
+    var r = [];
+    for (var k = 0; k < 7; k++) {
+      var vs = ['tt', 'mip', 'db'].map(function (b) { return m[3][b][k]; });
+      r.push(vs[0] == null ? null : (vs[0] + vs[1] + vs[2]) / 3);
+    }
+    m[3].mean = r;
+  });
+  var MET = { psnr: [0, 'PSNR (dB) ↑', true, 2], ssim: [1, 'SSIM ↑', true, 3], lpips: [2, 'LPIPS ↓', false, 3] };
+  var LABEL = { 'Ours': 1, 'Ours (HQ)': 1, 'FastGS': 1, 'Speedy-Splat': 1, '3DGS': 1, 'Beta-Splatting': 1, 'Nexels (400K)': 1, 'Compressed 3DGS': 1 };
+  var st = { b: 'mean', m: 'lpips', hw: true, log: false, hl: null };
+  var svg = document.getElementById('chartsvg'), tip = document.getElementById('tip'), box = document.getElementById('chart');
+  var W = 860, H = 500, L = 62, R = 18, T = 16, B = 50, NS = 'http://www.w3.org/2000/svg';
+
+  function el(tag, a, txt) { var e = document.createElementNS(NS, tag); for (var k in a) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; svg.appendChild(e); return e; }
+  function fmt(v, d) { return v >= 100 ? Math.round(v).toLocaleString('en-US') : v.toFixed(d); }
+  function niceTicks(lo, hi, n) {
+    var step = Math.pow(10, Math.floor(Math.log10((hi - lo) / n))), err = (hi - lo) / n / step;
+    step *= err >= 7.5 ? 10 : err >= 3.5 ? 5 : err >= 1.5 ? 2 : 1;
+    var out = []; for (var v = Math.ceil(lo / step) * step; v <= hi + 1e-9; v += step) out.push(+v.toFixed(6)); return out;
+  }
+
+  function draw() {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var mi = MET[st.m], k = mi[0], up = mi[2];
+    var pts = [];
+    D.forEach(function (m) {
+      var r = m[3][st.b];
+      pts.push({ m: m, fps: r[5], q: r[k], hw: false });
+      if (st.hw && r[6]) pts.push({ m: m, fps: r[6], q: r[k], hw: true });
+    });
+    var fx = pts.map(function (p) { return p.fps; }), qs = pts.map(function (p) { return p.q; });
+    var fmax = Math.max.apply(null, fx) * 1.08, fmin = st.log ? 20 : 0;
+    var qlo = Math.min.apply(null, qs), qhi = Math.max.apply(null, qs), pad = (qhi - qlo) * 0.08;
+    qlo -= pad; qhi += pad;
+    function X(f) { return st.log ? L + (Math.log(f) - Math.log(fmin)) / (Math.log(fmax) - Math.log(fmin)) * (W - L - R) : L + f / fmax * (W - L - R); }
+    // better quality is always drawn upward
+    function Y(q) { var t = (q - qlo) / (qhi - qlo); return up ? H - B - t * (H - T - B) : T + t * (H - T - B); }
+
+    // grid + ticks
+    var xt = st.log ? [20, 50, 100, 200, 500, 1000, 2000, 4000].filter(function (v) { return v <= fmax; }) : niceTicks(0, fmax, 6);
+    xt.forEach(function (v) { el('line', { x1: X(v), x2: X(v), y1: T, y2: H - B, class: 'grid' }); el('text', { x: X(v), y: H - B + 18, 'text-anchor': 'middle', class: 'tick' }, v.toLocaleString('en-US')); });
+    niceTicks(qlo, qhi, 6).forEach(function (v) { el('line', { x1: L, x2: W - R, y1: Y(v), y2: Y(v), class: 'grid' }); el('text', { x: L - 8, y: Y(v) + 4, 'text-anchor': 'end', class: 'tick' }, v.toFixed(mi[3] - 1)); });
+    el('line', { x1: L, x2: W - R, y1: H - B, y2: H - B, class: 'ax' });
+    el('line', { x1: L, x2: L, y1: T, y2: H - B, class: 'ax' });
+    el('text', { x: (L + W - R) / 2, y: H - 10, 'text-anchor': 'middle', class: 'alab' }, 'Frames per second, RTX 5090' + (st.log ? ' (log)' : ''));
+    el('text', { x: 16, y: (T + H - B) / 2, 'text-anchor': 'middle', class: 'alab', transform: 'rotate(-90 16 ' + (T + H - B) / 2 + ')' }, mi[1]);
+
+    // Pareto frontier: points no other point beats on both speed and quality
+    var better = function (a, b) { return up ? a > b : a < b; };
+    var front = pts.filter(function (p) { return !pts.some(function (o) { return o !== p && o.fps >= p.fps && !better(p.q, o.q) && (o.fps > p.fps || better(o.q, p.q)); }); })
+                   .sort(function (a, b) { return a.fps - b.fps; });
+    if (front.length) {
+      var d = 'M' + L + ' ' + Y(front[0].q);
+      front.forEach(function (p, i) { d += ' L' + X(p.fps) + ' ' + Y(p.q); if (i < front.length - 1) d += ' L' + X(p.fps) + ' ' + Y(front[i + 1].q); });
+      var last = front[front.length - 1];
+      el('path', { d: d + ' L' + X(last.fps) + ' ' + (H - B) + ' L' + L + ' ' + (H - B) + ' Z', class: 'front' });
+      el('path', { d: d, class: 'frontline' });
+    }
+
+    // hardware links
+    D.forEach(function (m) {
+      var r = m[3][st.b]; if (!st.hw || !r[6]) return;
+      el('line', { x1: X(r[5]), x2: X(r[6]) - 6, y1: Y(r[k]), y2: Y(r[k]), stroke: m[2], class: 'hwlink' + (st.hl === m[0] ? ' hl' : '') });
+    });
+    // points
+    var placed = pts.map(function (p) { return [X(p.fps) - 7, Y(p.q) - 7, 14]; });
+    pts.forEach(function (p) {
+      var m = p.m, ours = m[1] === 'ours', r = ours ? 7.5 : 6, cx = X(p.fps), cy = Y(p.q), hl = st.hl === m[0] ? ' hl' : '';
+      var c = el(ours ? 'rect' : 'circle', ours ? { x: cx - r, y: cy - r, width: 2 * r, height: 2 * r, rx: 2, transform: 'rotate(45 ' + cx + ' ' + cy + ')' } : { cx: cx, cy: cy, r: r });
+      c.setAttribute('class', 'pt' + hl);
+      c.setAttribute('fill', p.hw ? 'var(--card)' : m[2]);
+      c.setAttribute('stroke', p.hw ? m[2] : 'rgba(0,0,0,.45)');
+      c.setAttribute('stroke-width', p.hw ? 2.2 : 1);
+      c.addEventListener('mouseenter', function (e) { show(p, e); });
+      c.addEventListener('mousemove', function (e) { move(e); });
+      c.addEventListener('mouseleave', hide);
+      c.addEventListener('click', function (e) { show(p, e); });
+      if (LABEL[m[0]] && !p.hw) {
+        // first free spot among four around the marker, so labels never overlap
+        var w = m[0].length * 6.4 + 4, cand = [[10, -9, 1], [10, 17, 1], [-10, -9, -1], [-10, 17, -1], [10, 30, 1], [10, -22, 1], [-10, 30, -1], [-10, -22, -1]], pick = cand[0];
+        for (var ci = 0; ci < cand.length; ci++) {
+          var c0 = cand[ci], x0 = c0[2] > 0 ? cx + c0[0] : cx + c0[0] - w, y0 = cy + c0[1] - 11;
+          if (x0 < L || x0 + w > W - R) continue;
+          if (!placed.some(function (q) { return x0 < q[0] + q[2] && q[0] < x0 + w && y0 < q[1] + 13 && q[1] < y0 + 13; })) { pick = c0; break; }
+        }
+        placed.push([pick[2] > 0 ? cx + pick[0] : cx + pick[0] - w, cy + pick[1] - 11, w]);
+        el('text', { x: cx + pick[0], y: cy + pick[1], 'text-anchor': pick[2] > 0 ? 'start' : 'end', class: 'plab' + hl }, m[0]);
+      }
+    });
+    box.classList.toggle('dim', !!st.hl);
+    table();
+  }
+
+  function show(p, e) {
+    var r = p.m[3][st.b];
+    tip.innerHTML = '<b>' + p.m[0] + (p.hw ? ', hardware rasterizer' : '') + '</b>PSNR ' + r[0].toFixed(2) + ' &middot; SSIM ' + r[1].toFixed(3) +
+      ' &middot; LPIPS ' + r[2].toFixed(3) + '<br>' + r[3].toFixed(2) + 'M points &middot; ' + fmt(r[4], 0) + ' MB<br>' +
+      Math.round(r[5]).toLocaleString('en-US') + ' FPS' + (r[6] ? ' &middot; ' + Math.round(r[6]).toLocaleString('en-US') + ' FPS on HW' : '');
+    tip.classList.add('on'); move(e);
+  }
+  function move(e) {
+    var b = box.getBoundingClientRect(), x = e.clientX - b.left, y = e.clientY - b.top;
+    tip.style.left = Math.min(x + 14, b.width - tip.offsetWidth - 6) + 'px'; tip.style.top = Math.max(4, y - tip.offsetHeight - 10) + 'px';
+  }
+  function hide() { tip.classList.remove('on'); }
+
+  // legend: hover to highlight one method
+  var lg = document.getElementById('legend');
+  D.forEach(function (m) {
+    var s = document.createElement('span'); s.innerHTML = '<i style="background:' + m[2] + '"></i>' + m[0];
+    s.addEventListener('mouseenter', function () { st.hl = m[0]; draw(); });
+    s.addEventListener('mouseleave', function () { st.hl = null; draw(); });
+    lg.appendChild(s);
+  });
+
+  // table for the selected benchmark, top three tinted per column
+  function table() {
+    var t = document.getElementById('restab');
+    var cols = [['PSNR↑', 0, 1, 2], ['SSIM↑', 1, 1, 3], ['LPIPS↓', 2, -1, 3], ['Points↓', 3, -1, 2], ['MB', 4, 0, 0], ['FPS↑', 5, 1, 0], ['HW FPS↑', 6, 1, 0]];
+    var rank = cols.map(function (c) {
+      if (!c[2]) return {};
+      var vals = D.map(function (m) { return m[3][st.b][c[1]]; }).filter(function (v) { return v != null; })
+        .map(function (v) { return +v.toFixed(c[3]); });
+      vals = vals.filter(function (v, i) { return vals.indexOf(v) === i; }).sort(function (a, b) { return c[2] * (b - a); });
+      var o = {}; vals.slice(0, 3).forEach(function (v, i) { o[v] = i + 1; }); return o;
+    });
+    var h = '<thead><tr><th>Method</th>' + cols.map(function (c) { return '<th>' + c[0] + '</th>'; }).join('') + '</tr></thead><tbody>', prev = '';
+    D.forEach(function (m) {
+      var r = m[3][st.b], g = m[1] !== prev ? ' class="grp"' : ''; prev = m[1];
+      h += '<tr' + (m[1] === 'ours' ? ' class="ours"' : '') + '><td' + g + '>' + m[0] + '</td>' + cols.map(function (c, i) {
+        var v = r[c[1]]; if (v == null) return '<td' + g + '>&ndash;</td>';
+        var s = c[3] ? v.toFixed(c[3]) : Math.round(v).toLocaleString('en-US');
+        if (c[1] === 3) s += 'M';
+        var rk = rank[i][+v.toFixed(c[3])], cls = (g ? 'grp ' : '') + (rk ? 'r' + rk : '');
+        return '<td' + (cls ? ' class="' + cls.trim() + '"' : '') + '>' + s + '</td>';
+      }).join('') + '</tr>';
+    });
+    t.innerHTML = h + '</tbody>';
+  }
+
+  function seg(id, key) {
+    document.querySelectorAll('#' + id + ' button').forEach(function (b) {
+      b.addEventListener('click', function () {
+        document.querySelectorAll('#' + id + ' button').forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+        st[key] = b.dataset[key]; draw();
+      });
+    });
+  }
+  seg('bench', 'b'); seg('metric', 'm');
+  document.getElementById('hwtog').addEventListener('change', function (e) { st.hw = e.target.checked; draw(); });
+  document.getElementById('logtog').addEventListener('change', function (e) { st.log = e.target.checked; draw(); });
+  draw();
 })();
 </script>
 </body>
