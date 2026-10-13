@@ -195,6 +195,10 @@
           cursor:pointer; font-family:inherit}
   .toggle:hover{border-color:var(--accent); color:var(--accent)}
   .tnote{font-size:.82rem; color:var(--muted); line-height:1.5; margin:.5rem 0 0}
+  .vopt{background:transparent; color:var(--link); border:1px solid var(--line); border-radius:999px;
+        padding:.25rem .8rem; font-size:.8rem; font-weight:600; cursor:pointer; font-family:inherit; margin:0 .15rem}
+  .vopt:hover{border-color:var(--accent); color:var(--accent)}
+  .vopt[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:#fff}
   @media (prefers-color-scheme:dark){ .restable td.win{color:#4ac26b} .restable td.loss{color:#e8a33d} }
   /* ---------- BibTeX ---------- */
   pre{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1rem 1.1rem;
@@ -333,6 +337,17 @@
   <h2 id="demo">Interactive Demos</h2>
   <p class="tcenter note">Our bakes of all 13 benchmark scenes, rendered in your browser. Needs WebGPU (Chrome or Edge 113+, Safari 18+).</p>
   <figure>
+    <!-- Viewer options: rewrite every demo link in place. MSAA appends ?msaa=1 (4x
+         multisampled colour target in the WebGPU viewer; the pane has the same toggle).
+         Mipmaps swaps the bundle for its _e3rd_mip twin (atlas + 4 coarser box-filtered mip
+         levels, ~+20 % download; the viewer picks one integer level per surfel) for the
+         scenes that have one — see VOPT_MIP_SCENES below. -->
+    <p class="tcenter vopts" style="margin:.2rem 0 .6rem">
+      <span class="tnote" style="margin:0 .4rem 0 0">Viewer options:</span>
+      <button class="vopt" type="button" data-opt="msaa" aria-pressed="false" title="4x multisampled colour target (quad / hard-disc edges)">MSAA 4&times;</button>
+      <button class="vopt" type="button" data-opt="mip" aria-pressed="false" title="bundles with a 5-level atlas mip chain (+~20 % download)">Atlas mipmaps</button>
+      <span class="tnote vopt-note" style="margin:0 0 0 .5rem"></span>
+    </p>
     <div class="demogrid">
 <!-- E3RD:BEGIN -->
       <a class="demolink" href="https://nilkel.github.io/bitymi-demos/viewer/index.html?bundle=https://huggingface.co/datasets/Nilkel/bitymi-demos/resolve/main/mip_360/garden_e3rd.bitymi" target="_blank" rel="noopener">
@@ -995,5 +1010,39 @@
   draw();
 })();
 </script>
+<script>
+  // Viewer options (MSAA / atlas mipmaps): rewrite the demo links in place and remember
+  // the choice. Scenes without a _e3rd_mip bundle keep their level-0 link under "mipmaps".
+  (function () {
+    var VOPT_MIP_SCENES = [];   // filled as <scene>_e3rd_mip.bitymi bundles are uploaded
+    var links = Array.prototype.slice.call(document.querySelectorAll('.demolink'));
+    var base = links.map(function (a) { return a.getAttribute('href'); });
+    var note = document.querySelector('.vopt-note');
+    var state = { msaa: false, mip: false };
+    try { var st = JSON.parse(localStorage.getItem('bitymi.vopts') || '{}'); state.msaa = !!st.msaa; state.mip = !!st.mip; } catch (e) {}
+    function apply() {
+      var missing = [];
+      links.forEach(function (a, i) {
+        var href = base[i];
+        var m = href.match(/\/([a-z0-9_]+)_e3rd\.bitymi/);
+        var scene = m ? m[1] : null;
+        if (state.mip && scene) {
+          if (VOPT_MIP_SCENES.indexOf(scene) >= 0) href = href.replace(/_e3rd\.bitymi/, '_e3rd_mip.bitymi');
+          else missing.push(scene);
+        }
+        if (state.msaa) href += '&msaa=1';
+        a.setAttribute('href', href);
+      });
+      document.querySelectorAll('.vopt').forEach(function (b) { b.setAttribute('aria-pressed', String(!!state[b.dataset.opt])); });
+      if (note) note.textContent = state.mip && missing.length ? 'mip bundles not yet built for: ' + missing.join(', ') : '';
+      try { localStorage.setItem('bitymi.vopts', JSON.stringify(state)); } catch (e) {}
+    }
+    document.querySelectorAll('.vopt').forEach(function (b) {
+      b.addEventListener('click', function () { state[b.dataset.opt] = !state[b.dataset.opt]; apply(); });
+    });
+    apply();
+  })();
+</script>
+
 </body>
 </html>
