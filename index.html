@@ -340,12 +340,12 @@
     <!-- Viewer options: rewrite every demo link in place. MSAA appends ?msaa=1 (4x
          multisampled colour target in the WebGPU viewer; the pane has the same toggle).
          Mipmaps swaps the bundle for its _e3rd_mip twin (atlas + 4 coarser box-filtered mip
-         levels, ~+20 % download; the viewer picks one integer level per surfel) for the
+         levels, ~+25 % download; the viewer picks one integer level per surfel) for the
          scenes that have one — see VOPT_MIP_SCENES below. -->
     <p class="tcenter vopts" style="margin:.2rem 0 .6rem">
       <span class="tnote" style="margin:0 .4rem 0 0">Viewer options:</span>
       <button class="vopt" type="button" data-opt="msaa" aria-pressed="false" title="4x multisampled colour target (quad / hard-disc edges)">MSAA 4&times;</button>
-      <button class="vopt" type="button" data-opt="mip" aria-pressed="false" title="bundles with a 5-level atlas mip chain (+~20 % download)">Atlas mipmaps</button>
+      <button class="vopt" type="button" data-opt="mip" aria-pressed="false" title="bundles with a 5-level atlas mip chain (+~25 % download)">Atlas mipmaps</button>
       <span class="tnote vopt-note" style="margin:0 0 0 .5rem"></span>
     </p>
     <div class="demogrid">
@@ -1014,7 +1014,7 @@
   // Viewer options (MSAA / atlas mipmaps): rewrite the demo links in place and remember
   // the choice. Scenes without a _e3rd_mip bundle keep their level-0 link under "mipmaps".
   (function () {
-    var VOPT_MIP_SCENES = [];   // filled as <scene>_e3rd_mip.bitymi bundles are uploaded
+    var VOPT_MIP_SCENES = ['garden'];   // filled as <scene>_e3rd_mip.bitymi bundles are uploaded
     var links = Array.prototype.slice.call(document.querySelectorAll('.demolink'));
     var base = links.map(function (a) { return a.getAttribute('href'); });
     var note = document.querySelector('.vopt-note');
