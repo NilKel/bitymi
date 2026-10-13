@@ -1014,7 +1014,7 @@
   // Viewer options (MSAA / atlas mipmaps): rewrite the demo links in place and remember
   // the choice. Scenes without a _e3rd_mip bundle keep their level-0 link under "mipmaps".
   (function () {
-    var VOPT_MIP_SCENES = ['garden'];   // filled as <scene>_e3rd_mip.bitymi bundles are uploaded
+    var VOPT_MIP_SCENES = ['garden', 'room', 'bicycle', 'flowers', 'stump', 'treehill', 'counter', 'kitchen', 'bonsai', 'train', 'truck', 'drjohnson', 'playroom'];   // all 13 _e3rd_mip twins published 2026-10-13
     var links = Array.prototype.slice.call(document.querySelectorAll('.demolink'));
     var base = links.map(function (a) { return a.getAttribute('href'); });
     var note = document.querySelector('.vopt-note');
